@@ -1,1 +1,1 @@
-# UCL-Shell-Eco-marathon-Telemetry-System
+# UCL Shell Eco-marathon Telemetry System
