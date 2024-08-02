@@ -1,10 +1,6 @@
----
-description: >-
-  This user manual provides the information necessary for students to use the
-  telemetry system.
----
-
 # Overview
+
+This user manual provides the information necessary for students to use the telemetry system.
 
 The system comprises of sensors, a receiver, and a radio station.
 
@@ -15,8 +11,6 @@ The receiver is a computer board, who’s only function is to receive those sens
 Notice that the receiver does not take care of the driver display. This is because depending on the setups, they may be at the complete opposite ends of a vehicle, so running a long cable from one to the other is not ideal. Instead, the system was designed so that any interfacing element (e.g. display, servo motor, etc.) can be attached to the CAN bus via a node and from there communicate with the system however it was programmed to.
 
 The radio station is connected by USB to a computer, and all it does is intercept data over radio from the vehicle’s receiver, parse and translate that information, and then the computer program takes care of nicely displaying it all.
-
-
 
 what is the system, features and parts (hardware and software)
 
