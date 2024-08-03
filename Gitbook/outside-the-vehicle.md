@@ -42,9 +42,85 @@ Before using the interface two applications need to be installed:
 * The timer in the MATLAB application needs to be started manually.
 {% endhint %}
 
+### Development
 
+#### How to edit/update
 
+The MATLAB application works by taking reading the next message from the serial port which contains a single measurement in the Teleplot format, identifying its quantity (eg. Velocity, Super-capacitor voltage), storing it to it’s corresponding cell array (an array of arrays more detail on it later), and updating the plots accordingly with the new data while also checking which checkbox is checked.
 
+{% hint style="info" %}
+**Why cell arrays?**
+
+Cell arrays were used to allow for various measurements per lap to be taken and stored in a dynamic structure. Where the index of the cell array corresponds to the lap number. Allowing to compare various laps measurements with each other based on measurement number. Meaning that you can only compare for example the 10th velocity measurement of lap 3 with lap 5 and not the velocity at 100 m from the start line of these laps. This is a big negative of the current version of the interface, but assuming that the vehicle has consistent lap times then this approach is acceptable. How to improve this is detailed in the future work.
+{% endhint %}
+
+#### Main bits of the code
+
+Whenever calling a function in the MATLAB app environmnent the first value you need to pass into it is always “app”.
+
+<details>
+
+<summary>Cell arrays</summary>
+
+This is where the readings will be stored as discussed previously.
+
+{% code overflow="wrap" %}
+```matlab
+velocity = {}; %Cell array to store velocity readings of each lap
+current = {}; %Cell array to store current readings of each lap
+voltage = {}; %Cell array to store voltage readings of each lap
+%Voltage values
+superCapsOverallVoltage = {}; %Cell array to store the supercaps overall voltage readings of each lap
+beforeMotorControlVoltage = {}; %Cell array to store the before motor control voltage readings of each lap
+DCDCVoltage = {}; %Cell array to store the DC DC voltage readings of each lap
+```
+{% endcode %}
+
+</details>
+
+<details>
+
+<summary>Start-up function</summary>
+
+This is the function that allows for the serial port readings to be continuously (= every 1 ms) monitored and updated (highlighted in yellow), ultimately enabling the plots to be updated. The other stuff named timer are used to update the stopwatch.
+
+Define these in `properties (Access = private)`
+
+{% code overflow="wrap" %}
+```matlab
+        myTimer %Timer
+        Timer % Timer object
+        TimerObject % Timer object
+        StartTime % Start time
+```
+{% endcode %}
+
+Function itself
+
+{% code overflow="wrap" %}
+```matlab
+        function startupFcn(app)
+            % Query available serial ports
+            serialInfo = serialportlist("available");
+            app.serialPort.Items = serialInfo;
+            if isempty(serialInfo)
+                app.serialPort.Items = {'No Ports Available'};
+                app.serialPort.Enable = 'off';
+            else
+                app.serialPort.Enable = 'on';
+            end
+            app.myTimer = timer('ExecutionMode', 'fixedRate', 'Period', 1, 'TimerFcn', @(src, event)myTimerCallback(app, src, event)); % Specify the callback function
+            % Start the timer
+            start(app.myTimer);
+            app.TimerObject = timer(...
+                'ExecutionMode', 'fixedRate', ...
+                'Period', 1, ... % Update every second
+                'TimerFcn', @(~,~)updateTimer(app));
+        end
+```
+{% endcode %}
+
+</details>
 
 
 
