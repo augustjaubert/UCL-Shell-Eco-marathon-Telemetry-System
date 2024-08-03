@@ -2,6 +2,18 @@
 
 This user manual provides the information necessary for students to use the telemetry system.
 
+### Features
+
+This system was developed for usage on a race vehicle, to collect key performance indices. These vary depending on the vehicle competition, and this guide is directed towards the use on a vehicle participating in the Shell Eco Marathon competition.
+
+It has,
+
+* Expandable plug-in sensor capabilities
+* CAN bus communication
+* Data logging
+* Live radio telemetry
+* Driver & Race engineer graphical user interface
+
 The system comprises of sensors, a receiver, and a radio station.
 
 The sensors are configured as nodes on the CAN bus, meaning they each are paired with a small computer board. The latter acts as the middleman between the sensor’s interfacing protocol (i.e. the language the sensor talks in) and the CAN bus (i.e. what the telemetry system talks in).
@@ -14,19 +26,17 @@ The radio station is connected by USB to a computer, and all it does is intercep
 
 what is the system, features and parts (hardware and software)
 
-### Features
 
-This system was developed for usage on a race vehicle, to collect key performance indices. These vary depending on the vehicle competition, and this guide is directed towards the use on a vehicle participating in the Shell Eco Marathon competition.
-
-It has,
-
-* Expandable plug-in sensor capabilities
-* CAN bus communication&#x20;
-* Data logging
-* Live radio telemetry
-* Driver & Race engineer graphical user interface
 
 ### Quick installation guide
+
+
+
+### Live race engineer interface
+
+The live race engineer interface allows for the race engineer to assess the vehicle’s and driver’s performance during testing and at the race. This analysis is done via the use of plots. Currently there are three plots showing velocity, voltage, and current (these plots were meant to be used with a hydrogen powertrain). Besides the plots, there are toggle switches allowing for the comparison of various measured data (eg. Super-capacitor voltage and DC-DC voltage) and various laps.
+
+The how to use section describes how the already existing application can be used for data analysis. While the how to edit/update section details how the application was setup and how to modify it or update it for future applications. Finally, the future work section mentions improvements that can be made.
 
 
 

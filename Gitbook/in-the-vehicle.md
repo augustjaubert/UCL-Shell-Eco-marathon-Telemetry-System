@@ -48,9 +48,9 @@ After the system is ON, <mark style="color:orange;">the node is powered</mark> <
 
 
 
-### Develop
+### Development
 
-#### Node Library (to code a node)
+#### Node Library - to code a node
 
 API reference
 
@@ -58,7 +58,10 @@ API reference
 
 Examples
 
-See overview for pin definition.
+* screen node
+* voltmeter node
+
+See overview for [pin definition](./#hardware-and-pinouts).
 
 ```arduino
 void setup() {
