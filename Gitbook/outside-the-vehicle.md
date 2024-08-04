@@ -86,20 +86,15 @@ This is the function that allows for the serial port readings to be continuously
 
 Define these in `properties (Access = private)`
 
-{% code overflow="wrap" %}
-```matlab
-        myTimer %Timer
+<pre class="language-matlab" data-overflow="wrap"><code class="lang-matlab">        <a data-footnote-ref href="#user-content-fn-1">myTimer %Timer</a>
         Timer % Timer object
         TimerObject % Timer object
         StartTime % Start time
-```
-{% endcode %}
+</code></pre>
 
 Function itself
 
-{% code overflow="wrap" %}
-```matlab
-        function startupFcn(app)
+<pre class="language-matlab" data-overflow="wrap"><code class="lang-matlab">        function startupFcn(app)
             % Query available serial ports
             serialInfo = serialportlist("available");
             app.serialPort.Items = serialInfo;
@@ -109,7 +104,7 @@ Function itself
             else
                 app.serialPort.Enable = 'on';
             end
-            app.myTimer = timer('ExecutionMode', 'fixedRate', 'Period', 1, 'TimerFcn', @(src, event)myTimerCallback(app, src, event)); % Specify the callback function
+            <a data-footnote-ref href="#user-content-fn-2">app.myTimer = timer('ExecutionMode', 'fixedRate', 'Period', 1, 'TimerFcn', @(src, event)myTimerCallback(app, src, event)); % Specify the callback function</a>
             % Start the timer
             start(app.myTimer);
             app.TimerObject = timer(...
@@ -117,8 +112,7 @@ Function itself
                 'Period', 1, ... % Update every second
                 'TimerFcn', @(~,~)updateTimer(app));
         end
-```
-{% endcode %}
+</code></pre>
 
 </details>
 
@@ -130,3 +124,8 @@ Function itself
 
 
 
+
+
+[^1]: A
+
+[^2]: A
