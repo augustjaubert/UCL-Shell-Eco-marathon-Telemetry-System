@@ -22,7 +22,7 @@ Before using the interface two applications need to be installed:
 
 
 
-#### Software
+#### Software - Live Race Engineer Interface
 
 1. Ensure that the telemetry system is turned on. Can be verified by lights on the boards and the driver display should be displaying information if connected.
 2. Connect the ground station to your laptop.
@@ -116,13 +116,11 @@ Function itself
 
 </details>
 
-<details>
-
-<summary>Adding and plotting the new values</summary>
-
 As of now the way the code is setup you need to define a new add value function for each quantity that you want to be plotted and a function to update each of your plots.
 
-_Adding_
+<details>
+
+<summary>Adding the new values</summary>
 
 The function works by appending the value you give it to the end of the nth array in the cell array. Where n is the current lap number.
 
@@ -142,11 +140,13 @@ The function works by appending the value you give it to the end of the nth arra
 ```
 {% endcode %}
 
-***
+</details>
 
-_Plotting_
+<details>
 
-Single variable plots - For plots like velocity where you are only comparing its value through various laps the following function was created to plot it.
+<summary>Plotting the new values</summary>
+
+_Single variable plots_ - For plots like velocity where you are only comparing its value through various laps the following function was created to plot it.
 
 {% code overflow="wrap" %}
 ```matlab
@@ -178,7 +178,9 @@ Single variable plots - For plots like velocity where you are only comparing its
 ```
 {% endcode %}
 
-Multivariable plots - For plots where multiple quantities are being compared within a lap and over various laps the following function can be used. With the difference compared to the previous function being the switch which checks for which quantities should be plotted for the given lap.
+***
+
+_Multivariable plots_ - For plots where multiple quantities are being compared within a lap and over various laps the following function can be used. With the difference compared to the previous function being the switch which checks for which quantities should be plotted for the given lap.
 
 {% code overflow="wrap" %}
 ```matlab
@@ -235,7 +237,92 @@ Multivariable plots - For plots where multiple quantities are being compared wit
 
 </details>
 
+#### Putting it all together
 
+<pre class="language-matlab" data-overflow="wrap" data-line-numbers data-full-width="true"><code class="lang-matlab"><a data-footnote-ref href="#user-content-fn-3">function myTimerCallback(app, src, event)</a>
+            <a data-footnote-ref href="#user-content-fn-4">if (src.NumBytesAvailable > 0)</a>
+                        <a data-footnote-ref href="#user-content-fn-5">dataStr = readline(src);  % Reads data from the serial port until a newline is received</a>
+                        % Remove non-ASCII characters except '§'
+                        <a data-footnote-ref href="#user-content-fn-6">dataStr = regexprep(dataStr, '[\s>]|[^\x20-\x7E§]', '');</a>
+                        <a data-footnote-ref href="#user-content-fn-7">try</a>
+                            % Split the data into its components
+                            <a data-footnote-ref href="#user-content-fn-8">splitData = strsplit(dataStr, '§');  % Split based on the '§' delimiter</a>
+                            <a data-footnote-ref href="#user-content-fn-9">if numel(splitData) == 2</a>
+                                <a data-footnote-ref href="#user-content-fn-10">varNameValue = splitData{1};</a>
+                                %varUnit = splitData{2};
+
+                                % Further split to separate variable name and value
+                                <a data-footnote-ref href="#user-content-fn-11">nameValueSplit = strsplit(varNameValue, ':');</a>
+                                    <a data-footnote-ref href="#user-content-fn-12">if numel(nameValueSplit) == 2</a>
+                                        <a data-footnote-ref href="#user-content-fn-13">varName = nameValueSplit{1};</a>
+                                        <a data-footnote-ref href="#user-content-fn-14">varValue = str2double(nameValueSplit{2});  % Convert value to double</a>
+
+                                        <a data-footnote-ref href="#user-content-fn-15">if strcmp(varName, 'Lap#')</a>
+                                            <a data-footnote-ref href="#user-content-fn-16">app.LapField.Value = varValue;</a>
+                                            <a data-footnote-ref href="#user-content-fn-17">handleNewLap(app);</a>
+
+                                        elseif strcmp(varName, 'Velocity')
+                                            %disp('This is a velocity reading');
+                                            <a data-footnote-ref href="#user-content-fn-18">addVelocityValue(app, varValue);</a>
+                                            <a data-footnote-ref href="#user-content-fn-19">updateVelocityPlot(app);</a>
+
+                                        %Supercaps Overall voltage update
+                                        elseif strcmp(varName, 'SCOV')
+                                            <a data-footnote-ref href="#user-content-fn-20">addSCOVoltageValue(app, string(varValue));</a>
+                                            <a data-footnote-ref href="#user-content-fn-21">updateVoltagePlot(app);</a>
+
+                                        %before motor control voltage update
+                                        elseif strcmp(varName, 'BMCV')
+                                            <a data-footnote-ref href="#user-content-fn-22">addBMCVoltageValue(app, string(varValue));</a>
+                                            <a data-footnote-ref href="#user-content-fn-23">updateVoltagePlot(app);</a>
+
+                                        %DC DC voltage update
+                                        elseif strcmp(varName, 'DCDCV')
+                                            <a data-footnote-ref href="#user-content-fn-24">addDCDCVoltageValue(app, string(varValue));</a>
+                                            <a data-footnote-ref href="#user-content-fn-25">updateVoltagePlot(app);</a>
+
+                                        %Supercaps Overall current update
+                                        elseif strcmp(varName, 'Curr1')
+                                            <a data-footnote-ref href="#user-content-fn-26">addSCOCurrentValue(app, string(varValue));</a>
+                                            <a data-footnote-ref href="#user-content-fn-27">updateCurrentPlot(app);</a>
+
+                                        %Supercaps Charge current update
+                                        elseif strcmp(varName, 'Curr2')
+                                            <a data-footnote-ref href="#user-content-fn-28">addSCCCurrentValue(app, string(varValue));</a>
+                                            <a data-footnote-ref href="#user-content-fn-29">updateCurrentPlot(app);</a>
+
+                                        %Before Motor Control Current
+                                        %update
+                                        elseif strcmp(varName, 'Curr3')
+                                            <a data-footnote-ref href="#user-content-fn-30">addBMCCurrentValue(app, string(varValue));</a>
+                                            <a data-footnote-ref href="#user-content-fn-31">updateCurrentPlot(app);</a>
+
+                                        %DC DC Current update
+                                        elseif strcmp(varName, 'DCDCC')
+                                            <a data-footnote-ref href="#user-content-fn-32">addDCDCCurrentValue(app, string(varValue));</a>
+                                            <a data-footnote-ref href="#user-content-fn-33">updateCurrentPlot(app);</a>
+                                        end
+                                    else
+                                        disp('Error: Variable name and value not in expected format.');
+                                    end
+                            else
+                                    disp('Error: Data not in expected format.');
+                            end
+                        catch
+                            disp(['Error processing data: ', dataStr]);
+                        end
+            end
+        end
+
+</code></pre>
+
+### Development
+
+
+
+#### Future Work - Live Race Engineer Interface
+
+The interface can be improved upon by creating a sophisticated database structure and querying the data from it. This would allow for any kind of comparison plot to be created. Furthermore, instead of sending the measurements from the vehicle to the ground station they could be uploaded to an online database from which the readings can be accessed by any number of race engineers and from anywhere, allowing more people to do various kinds of data analysis simultaneously.
 
 
 
@@ -250,3 +337,65 @@ Multivariable plots - For plots where multiple quantities are being compared wit
 [^1]: A
 
 [^2]: A
+
+[^3]: Timer function callback, allows the plots to be continuously updated.
+
+[^4]: Converts the Teleplot formatted measurement into VarName and VarValue.
+
+[^5]: Converts the Teleplot formatted measurement into VarName and VarValue.
+
+[^6]: Converts the Teleplot formatted measurement into VarName and VarValue.
+
+[^7]: Converts the Teleplot formatted measurement into VarName and VarValue.
+
+[^8]: Converts the Teleplot formatted measurement into VarName and VarValue.
+
+[^9]: Converts the Teleplot formatted measurement into VarName and VarValue.
+
+[^10]: Converts the Teleplot formatted measurement into VarName and VarValue.
+
+[^11]: Converts the Teleplot formatted measurement into VarName and VarValue.
+
+[^12]: Converts the Teleplot formatted measurement into VarName and VarValue.
+
+[^13]: Converts the Teleplot formatted measurement into VarName and VarValue.
+
+[^14]: Converts the Teleplot formatted measurement into VarName and VarValue.
+
+[^15]: Checks whether VarName is “Lap#” and if so increments to lap number.
+
+[^16]: Checks whether VarName is “Lap#” and if so increments to lap number.
+
+[^17]: Checks whether VarName is “Lap#” and if so increments to lap number.
+
+[^18]: Compares the VarName with the a predefined variable name and stores it VarValue to the corresponding cell array.
+
+[^19]: Updates the plots.
+
+[^20]: Compares the VarName with the a predefined variable name and stores it VarValue to the corresponding cell array.
+
+[^21]: Updates the plots.
+
+[^22]: Compares the VarName with the a predefined variable name and stores it VarValue to the corresponding cell array.
+
+[^23]: Updates the plots.
+
+[^24]: Compares the VarName with the a predefined variable name and stores it VarValue to the corresponding cell array.
+
+[^25]: Updates the plots.
+
+[^26]: Compares the VarName with the a predefined variable name and stores it VarValue to the corresponding cell array.
+
+[^27]: Updates the plots.
+
+[^28]: Compares the VarName with the a predefined variable name and stores it VarValue to the corresponding cell array.
+
+[^29]: Updates the plots.
+
+[^30]: Compares the VarName with the a predefined variable name and stores it VarValue to the corresponding cell array.
+
+[^31]: Updates the plots.
+
+[^32]: Compares the VarName with the a predefined variable name and stores it VarValue to the corresponding cell array.
+
+[^33]: Updates the plots.
