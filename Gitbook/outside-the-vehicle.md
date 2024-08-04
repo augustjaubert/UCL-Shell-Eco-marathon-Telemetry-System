@@ -116,6 +116,127 @@ Function itself
 
 </details>
 
+<details>
+
+<summary>Adding and plotting the new values</summary>
+
+As of now the way the code is setup you need to define a new add value function for each quantity that you want to be plotted and a function to update each of your plots.
+
+_Adding_
+
+The function works by appending the value you give it to the end of the nth array in the cell array. Where n is the current lap number.
+
+{% code overflow="wrap" %}
+```matlab
+        function addVelocityValue(app, value)
+            lapIndex = app.LapField.Value; % Get the current lap index from the LapField
+    
+            if length(app.velocity) < lapIndex || isempty(app.velocity{lapIndex})
+                % If the current lap's cell doesn't exist, initialize it with the value
+                app.velocity{lapIndex} = value;
+            else
+                % Otherwise, append the value to the existing cell data
+                app.velocity{lapIndex} = [app.velocity{lapIndex}, value];
+            end
+        end
+```
+{% endcode %}
+
+***
+
+_Plotting_
+
+Single variable plots - For plots like velocity where you are only comparing its value through various laps the following function was created to plot it.
+
+{% code overflow="wrap" %}
+```matlab
+        function updateVelocityPlot(app)
+            cla(app.velUIAxes);  % Clear the current axes
+            hold(app.velUIAxes, 'on');
+            checkedNodes = app.LapTree.CheckedNodes;  % Get the list of checked nodes
+
+            % Loop over each checked node
+            for i = 1:numel(checkedNodes)
+                node = checkedNodes(i);  % Get each checked node
+                lapIndex = node.NodeData;  % Assuming NodeData stores the corresponding lap index
+
+                % Ensure lapIndex is valid and within bounds
+                if isnumeric(lapIndex) && lapIndex > 0 && lapIndex <= length(app.velocity)
+                    % Check if the lap data exists and is not empty
+                    if ~isempty(app.velocity{lapIndex})
+                        plot(app.velUIAxes, app.velocity{lapIndex}, 'DisplayName', sprintf('Lap %d', lapIndex), 'LineWidth',4);
+                    end
+                end
+            end
+            hold(app.velUIAxes, 'off');
+            legend(app.velUIAxes, 'Location', 'best');
+            title(app.velUIAxes, 'Velocity vs Measurements');
+            xlabel(app.velUIAxes, 'Measurements');
+            ylabel(app.velUIAxes, 'Velocity (m/s)');
+        end
+
+```
+{% endcode %}
+
+Multivariable plots - For plots where multiple quantities are being compared within a lap and over various laps the following function can be used. With the difference compared to the previous function being the switch which checks for which quantities should be plotted for the given lap.
+
+{% code overflow="wrap" %}
+```matlab
+        function updateCurrentPlot(app)
+            cla(app.currentUIAxes);  % Clear the current axes
+            hold(app.currentUIAxes, 'on');
+            checkedLapNodes = app.LapTree.CheckedNodes;  % Get the list of checked nodes from the LapTree
+            checkedCurrentParameters = app.CurrentTree.CheckedNodes;  % Get the list of checked voltage parameters
+
+
+            % Loop over each checked lap node
+            for i = 1:numel(checkedLapNodes)
+                lapNode = checkedLapNodes(i);  % Get each checked lap node
+                lapIndex = lapNode.NodeData;  % Assuming NodeData stores the corresponding lap index
+
+                % Ensure lapIndex is valid and within bounds
+                if isnumeric(lapIndex) && lapIndex > 0 && lapIndex <= length(app.velocity)
+                    % Check if the lap data exists and is not empty
+
+                    % Loop over each checked parameter node
+                    for j = 1:numel(checkedCurrentParameters)
+                        parameterNode = checkedCurrentParameters(j);
+                        parameterIndex = parameterNode.NodeData;  % NodeData here should correspond to the parameter index
+
+                        switch parameterIndex
+                            case 1  % Supercaps Overall Current
+                                if ~isempty(app.superCapsOverallCurrent{lapIndex})
+                                    plot(app.currentUIAxes, str2double(app.superCapsOverallCurrent{lapIndex}), 'DisplayName', sprintf('SCO Lap %d', lapIndex), 'LineWidth',4);
+                                end
+                            case 2  % Supercaps Charge Current
+                                if ~isempty(app.superCapsChargeCurrent{lapIndex})
+                                    plot(app.currentUIAxes, str2double(app.superCapsChargeCurrent{lapIndex}), 'DisplayName', sprintf('SCC Lap %d', lapIndex), 'LineWidth',4);
+                                end
+                            case 3  % Before Motor Control Current
+                                if ~isempty(app.beforeMotorControlCurrent{lapIndex})
+                                    plot(app.currentUIAxes, str2double(app.beforeMotorControlCurrent{lapIndex}), 'DisplayName', sprintf('BMC Lap %d', lapIndex), 'LineWidth',4);
+                                end
+                            % case 4  % DC DC Current
+                            %     if ~isempty(app.DCDCCurrent{lapIndex})
+                            %         plot(app.currentUIAxes, str2double(app.DCDCCurrent{lapIndex}), 'DisplayName', sprintf('DCDC Lap %d', lapIndex), 'LineWidth',4);
+                            %     end
+                        end
+                    end
+                end
+            end
+            hold(app.currentUIAxes, 'off');
+            legend(app.currentUIAxes, 'Location', 'best');
+            title(app.currentUIAxes, 'Current vs Measurements');
+            xlabel(app.currentUIAxes, 'Measurements');
+            ylabel(app.currentUIAxes, 'Current (A)');
+        end
+```
+{% endcode %}
+
+</details>
+
+
+
 
 
 
