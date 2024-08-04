@@ -32,14 +32,14 @@ Before using the interface two applications need to be installed:
 6. On the top left of the MATLAB application select the port and baudrate (same as Teleplot).
 7. If this worked successfully  you should be seeing data being plotted on the plots. Use the lap and quantity toggle switched to adjust the plots.
 
-{% hint style="info" %}
+{% hint style="warning" %}
 * Always start with Teleplot.
 * The data that is being sent from the ground station to the laptop follows the format specified by Teleplot A:B§C
   * **A** is the name of the telemetry variable (be kind and avoid `:|` special chars in it!).
   * **B** is either the integer or floating point value to be plotted or a text format value to be displayed.
   * **C** is **optional** and is the unit of the telemetry ( please avoid `,;:|.` special chars in it!).
 * The MATLAB application will crash if you click on a toggle switch that has no datafeed assigned to it.
-* The timer in the MATLAB application needs to be started manually.
+* The timer in the MATLAB application currently needs to be started manually.
 {% endhint %}
 
 ### Development
@@ -239,6 +239,10 @@ _Multivariable plots_ - For plots where multiple quantities are being compared w
 
 #### Putting it all together
 
+{% hint style="info" %}
+You can click on the underlined code to reveal information about its use.
+{% endhint %}
+
 <pre class="language-matlab" data-overflow="wrap" data-line-numbers data-full-width="true"><code class="lang-matlab"><a data-footnote-ref href="#user-content-fn-3">function myTimerCallback(app, src, event)</a>
             <a data-footnote-ref href="#user-content-fn-4">if (src.NumBytesAvailable > 0)</a>
                         <a data-footnote-ref href="#user-content-fn-5">dataStr = readline(src);  % Reads data from the serial port until a newline is received</a>
@@ -313,7 +317,6 @@ _Multivariable plots_ - For plots where multiple quantities are being compared w
                         end
             end
         end
-
 </code></pre>
 
 ### Development
