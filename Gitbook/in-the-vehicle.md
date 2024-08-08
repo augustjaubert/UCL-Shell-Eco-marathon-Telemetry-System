@@ -39,7 +39,7 @@ This pinout diagram is valid for the XIAO ESP32-C3 microcontrollers, but some pi
 
 #### hardware
 
-1. Assembling the node case
+1. Assembling the node case in ascending order
 
 <figure><img src=".gitbook/assets/node assembly light@4x.png" alt=""><figcaption></figcaption></figure>
 
