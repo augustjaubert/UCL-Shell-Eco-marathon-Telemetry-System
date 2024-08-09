@@ -1,6 +1,6 @@
 # In the vehicle
 
-## Node
+## NODE
 
 The sensors are configured as nodes on the CAN bus, meaning they each are paired with a small computer board. The latter acts as the middleman between the sensor’s interfacing protocol (i.e. the language the sensor talks in) and the CAN bus (i.e. what the telemetry system talks in).
 
@@ -12,10 +12,10 @@ The node computer hardware diagram is presented in the figure below.
 
 <figure><picture><source srcset=".gitbook/assets/node dark 2@4x.png" media="(prefers-color-scheme: dark)"><img src=".gitbook/assets/node light 2@4x.png" alt=""></picture><figcaption><p>Technical diagrams of the node computer</p></figcaption></figure>
 
-### technical specs
+### Technical specs
 
 {% tabs %}
-{% tab title="tech specs" %}
+{% tab title="Tech specs" %}
 * The nodes use a ESP32 microcontroller (S3 or C3 models) from Espressif, manufactured by Seeed ([XIAO ESP32C3](https://wiki.seeedstudio.com/XIAO\_ESP32C3\_Getting\_Started/) / [XIAO ESP32S3](https://wiki.seeedstudio.com/xiao\_esp32s3\_getting\_started/)) (top surface).
 * It uses two rows of 6 and 5 female headers (top surface) to connect to the sensor shield.
 * They are equipped with [TCAN1462V-Q1](https://www.ti.com/lit/ds/symlink/tcan1462-q1.pdf?HQS=dis-mous-null-mousermode-dsf-pf-null-wwe\&ts=1698833597358) CAN transceivers (bottom surface) that make use of the MCU’s native [TWAI](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/peripherals/twai.html#overview) controllers.
@@ -24,7 +24,7 @@ The node computer hardware diagram is presented in the figure below.
 * The CAN lines also have footprint for capacitors in series and parallel (bottom surface) to help if filtering is needed on the bus.
 {% endtab %}
 
-{% tab title="pinout" %}
+{% tab title="Pinout" %}
 <figure><img src=".gitbook/assets/node pinout light@4x.png" alt=""><figcaption></figcaption></figure>
 
 {% hint style="info" %}
@@ -35,39 +35,47 @@ This pinout diagram is valid for the XIAO ESP32-C3 microcontrollers, but some pi
 {% endtab %}
 {% endtabs %}
 
-### setup
+### Setup
 
-#### hardware
+#### Hardware
 
-1. Assembling the node case in ascending order
+1. **Assembling the node case** (in ascending order)
 
 <figure><img src=".gitbook/assets/node assembly light@4x.png" alt=""><figcaption></figcaption></figure>
 
-2. Attaching the node to the CAN/Power bus
+2. **Attaching the node to the CAN/Power bus**
 
 Connecting to the CAN and Power bus is easy. There are two 4-pin JST XH connectors opposite to the USB-C connector, which are connected in parallel for you to daisy-chain the whole system. This means that there’s no wrong way to connect it, just attach one cable to the bus, and if you want to add a new sensor, just attach another cable in the other connector and into the new node.
 
 <figure><picture><source srcset=".gitbook/assets/can assembly dark@4x.png" media="(prefers-color-scheme: dark)"><img src=".gitbook/assets/can assembly light@4x.png" alt=""></picture><figcaption></figcaption></figure>
 
-3. Installing in the vehicle
+3. **Installing in the vehicle**
 
+Place the node wherever it is needed in the vehicle.
 
+<figure><img src=".gitbook/assets/sensor placement light@4x.png" alt=""><figcaption></figcaption></figure>
 
 {% hint style="info" %}
 If you need to make a new cable, make sure to use the proper connections as seen in the figure below.
 {% endhint %}
 
-<figure><img src=".gitbook/assets/cable wiring light@4x.png" alt="" width="375"><figcaption><p>CAN &#x26; Power cable wiring diagram</p></figcaption></figure>
+<figure><picture><source srcset=".gitbook/assets/cable wiring dark@4x.png" media="(prefers-color-scheme: dark)"><img src=".gitbook/assets/cable wiring light@4x.png" alt="" width="375"></picture><figcaption><p>CAN &#x26; Power cable wiring diagram</p></figcaption></figure>
 
 
 
-#### software
+#### Software
+
+* Arduino IDE / Platform IO / ESP-IDF
+
+
 
 * ESP board definitions
-* Arduino IDE / Platform IO / ESP-IDF
+
+
+
 * Installing the node library
 
-### how to use
+### How to use
 
 Find the quick guide in the [overview section](./#quick-installation-guide).
 
@@ -75,7 +83,7 @@ Find the quick guide in the [overview section](./#quick-installation-guide).
 You can add up to 70+ nodes onto the CAN bus, however limiting the number of sensors to <15 is recommended (i.e. limit the different messages competing on the CAN bus).
 {% endhint %}
 
-#### steps
+#### Steps
 
 1. <mark style="color:orange;">Switch the node ON</mark>.
 
@@ -95,7 +103,7 @@ Be careful because earlier versions have reversed ON/OFF writings by mistake, so
 After the system is powered, <mark style="color:orange;">the node is powered</mark> <mark style="color:orange;">if you see a LED lighting up.</mark>
 {% endhint %}
 
-#### checklist
+#### Checklist
 
 
 
