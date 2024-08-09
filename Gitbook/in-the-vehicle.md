@@ -265,7 +265,7 @@ A structure representing an expected message with its identifier and variable ty
 {% endtab %}
 
 {% tab title="Example sketch" %}
-This code initialises the CAN messages in the setup, and then in the loop updates them and sends them onto the bus.
+This example code initialises the CAN messages in the setup, and then in the loop updates them and sends them onto the bus.
 
 ```cpp
 #include "Node.h"
@@ -366,7 +366,7 @@ void loop()
 {% endtab %}
 
 {% tab title="Example screen" %}
-This code receives CAN messages on the bus and updates the screen accordingly.
+This example code receives CAN messages on the bus and hypothetically updates the screen accordingly.
 
 ```cpp
 #include "Node.h"
@@ -455,59 +455,152 @@ void loop() {
 {% endtab %}
 
 {% tab title="Example sensor" %}
-This code was made for the voltmeter node, to show the implementation of the node library with a specific sensor.
+This code was made for the voltmeter node, to show the implementation of the node library with a specific sensor (i.e. TI ADS1115 ADC chip).
 
+```cpp
+#include "Node.h"
+#include <Adafruit_ADS1X15.h>
 
+/**
+ * Pin Configuration for XIAO ESP32-C3 and XIAO ESP32-S3
+ *
+ * This section defines the GPIO pins used for TX, RX, and controlling
+ * the sleep mode of the CAN transceiver chip based on the specific
+ * board variant being used. Ensure that you select the correct pin
+ * configuration for your hardware setup.
+ *
+ * TX_GPIO_NUM: Transmit Pin
+ * - XIAO ESP32-C3: GPIO_NUM_3
+ * - XIAO ESP32-S3 (e.g. Screen Node): GPIO_NUM_2
+ *
+ * RX_GPIO_NUM: Receive Pin
+ * - XIAO ESP32-C3: GPIO_NUM_4
+ * - XIAO ESP32-S3 (e.g. Screen Node): GPIO_NUM_3
+ *
+ * sleepPin: Sleep Control Pin for the CAN Transceiver
+ * - XIAO ESP32-C3: 2
+ * - XIAO ESP32-S3: 1
+ *
+ * Note:
+ * - Make sure to define the correct board type before setting these pins.
+ * - These configurations are critical for proper communication over the CAN bus.
+ */
+
+Adafruit_ADS1115 ads; /* Use this for the 16-bit version */
+
+Node node;
+void setup()
+{
+  // Initialize serial communication
+  Serial.begin(115200);
+
+  // Delay to prevent issues with serial printing
+  delay(1000);
+
+  // Initialize the Node with specific GPIO pins and standby pin
+  node.begin(GPIO_NUM_4, GPIO_NUM_3, 2);
+
+  // Initialize messages with specific IDs and data lengths
+  node.initializeMessage(10, 8);
+  node.initializeMessage(11, 4);
+
+  // The ADC input range (or gain) can be changed via the following
+  // functions, but be careful never to exceed VDD +0.3V max, or to
+  // exceed the upper and lower limits if you adjust the input range!
+  // Setting these values incorrectly may destroy your ADC!
+  //                                                                ADS1015  ADS1115
+  //                                                                -------  -------
+  // ads.setGain(GAIN_TWOTHIRDS);  // 2/3x gain +/- 6.144V  1 bit = 3mV      0.1875mV (default)
+  // ads.setGain(GAIN_ONE);        // 1x gain   +/- 4.096V  1 bit = 2mV      0.125mV
+  ads.setGain(GAIN_TWO); // 2x gain   +/- 2.048V  1 bit = 1mV      0.0625mV
+  // ads.setGain(GAIN_FOUR);  // 4x gain   +/- 1.024V  1 bit = 0.5mV    0.03125mV
+  //  ads.setGain(GAIN_EIGHT);      // 8x gain   +/- 0.512V  1 bit = 0.25mV   0.015625mV
+  //  ads.setGain(GAIN_SIXTEEN);    // 16x gain  +/- 0.256V  1 bit = 0.125mV  0.0078125mV
+
+  // Initialize the ADS1115 ADC
+  if (!ads.begin())
+  {
+    Serial.println("Failed to initialize ADS.");
+    while (1)
+      ;
+  }
+
+  // Delay after initialization
+  delay(500);
+
+  // Set the data rate for the ADS1115 ADC
+  ads.setDataRate(RATE_ADS1115_8SPS);
+}
+
+void loop()
+{
+  // Read ADC values for differential inputs 0-1 and 2-3
+  int32_t results01 = ads.readADC_Differential_0_1();
+  int32_t results23 = ads.readADC_Differential_2_3();
+
+  // Map the ADC values to the desired range
+  float mapped01 = map(results01, 5100, 32640, 500, 3200) / 1E2;
+  // float mapped23 = map(results23, 5100, 32640, 500, 3200) / 1E2;
+  // float mappedSOC = map((int32_t)(mapped23 * 10), 0, 327, 0, 100);
+
+  // printf("0-1: %d  2-3: %d\n", results01, results23);
+  printf("%d,%d,\n", results01, results23);
+  printf("%f,\n", mapped01);
+
+  // Update the message data
+  // node.updateMessageData(10, mappedSOC, mapped23);
+  // node.updateMessageData(11, mapped01);
+  // node.transmitAllMessages();
+  
+  delay(500);
+}
+```
 {% endtab %}
 {% endtabs %}
 
-```
-```
+#### Design a new sensor
 
-Examples
+The sensors come in all forms, but only one shape. They all have a standardised footprint that you can build on to make new sensors while still remaining compatible with the node computer.
 
-* screen node
-* voltmeter node
+<figure><img src=".gitbook/assets/image (3).png" alt="" width="375"><figcaption><p>Template sensor shield footprint (Unit: mm)</p></figcaption></figure>
 
-See [pin definition](in-the-vehicle.md#pinout).
+The footprint has four M3 sized holes for support, and two rows of pin headers placed just like the [node computer pinout diagram](in-the-vehicle.md#technical-specs).
 
-```arduino
-void setup() {
-    // Initialize serial communication for debugging
-    Serial.begin(115200);
-    delay(1000);  // Wait for serial monitor to initialize
+The fusion PCB file can be found on the Github repository under **Hardware**, and has the pin header sensor connections already pre-defined to simplify the design.
 
-    // Set up the node for CAN communication with specified pins
-    // RX pin: GPIO_NUM_4, TX pin: GPIO_NUM_3, Standby pin: 2
-    node.begin(GPIO_NUM_4, GPIO_NUM_3, 2);
+Some general help and thoughts on selecting a sensor:
 
-    // Initialize message containers with specific IDs and data lengths
-    node.initializeMessage(10, 8);  // Message ID: 10, Data Length: 8 bytes
-    node.initializeMessage(14, 4);  // Message ID: 14, Data Length: 4 bytes
+* Think about what you want to know performance-wise (e.g. fuel consumption etc.), and search up what kind of sensor best suits your requirements.
 
-    // Display the data from the message with the highest ID
-    node.displayLatestMessageData();
+You can have multiple sensors that can accomplish the same task, but have different pros and cons.&#x20;
 
-    // Define expected messages with their IDs and variable types
-    std::vector<ExpectedMessage> messages = {
-        {20, INT32, FLOAT}, // ID: 20, Variables: INT32 and FLOAT
-        {24, UINT32, NONE}  // ID: 24, Variable: UINT32
-    };
+e.g. to measure velocity, we could have had an RPM sensor or a GPS. GPS was a safer, more absolute solution, and in this case we already needed it for position.
 
-    // Add expected messages to the node's map
-    node.addExpectedMessages(messages);
-}
-```
+* On big retailers websites (e.g. Mouser, Farnell, DigiKey, etc.), look for&#x20;
+  * the price (i.e. unit or bulk?),&#x20;
+  * availability (i.e. is it end of life?),&#x20;
+  * size (i.e. does it fit onthe board?),&#x20;
+  * functionalities (i.e. handy reliability mechanisms, etc.)
 
-#### design a new sensor
 
-Electrical design
 
-Code integration
+* What communcation protocol does it use?
 
-Tips
+Connecting to your sensor depends on the protocol the sensor uses to communicate. These can be Serial-Peripheral-Interface (SPI), Inter-Integrated Communication (I2C), UART or you have some general-purpose input/output (GPIO) pins that you can reprogram based on the ESP32-C3 or ESP32-S3 capabilities. The board also has an input for simple analog voltage reading up to 2.5V, however it is recommended to use the ADC shield instead of the ADC pins as they have lower resolution and impedance (essentially just worse, check out Espressif’s documentation).
 
-#### build a computer
+* Does it have an ECAD footprint available?
+
+Often you are able to find the footprint ready-made by a retailer on their page (Mouser, etc.) or by a hobbyist. This simplifies the design process, however it is recommended to always double check the pinout matches that of the datasheet, as well as the dimensions.
+
+{% hint style="info" %}
+**Tip:** Find sensors with extensive online coverage (arduino tutorials, pre-existing code, etc.) as well as from breakout board manufacturers (e.g. Adafruit, Sparkfun, Seed). They often open source their electrical diagrams and code.
+{% endhint %}
+
+When it comes to wiring the sensor on the board and adding the necessary components around the chip, it is best to follow the datasheet given by the manufacturer (e.g. Texas Instruments). They often present example schematics showcasing the most common setups.
+
+Most of the sensors developed this year were chosen because they had been covered in online tutorials, and thus had already proven code and easy-to-use libraries for them. This makes it easy to pair with our node library, as you can see in the [sensor example](in-the-vehicle.md#example-sensor).
+
+#### Build a computer
 
 Tips on soldering
 
