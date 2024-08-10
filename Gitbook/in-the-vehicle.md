@@ -574,13 +574,14 @@ You can have multiple sensors that can accomplish the same task, but have differ
 
 e.g. to measure velocity, we could have had an RPM sensor or a GPS. GPS was a safer, more absolute solution, and in this case we already needed it for position.
 
-* On big retailers websites (e.g. Mouser, Farnell, DigiKey, etc.), look for&#x20;
-  * the price (i.e. unit or bulk?),&#x20;
-  * availability (i.e. is it end of life?),&#x20;
-  * size (i.e. does it fit onthe board?),&#x20;
-  * functionalities (i.e. handy reliability mechanisms, etc.)
+{% hint style="info" %}
+On big retailers websites (e.g. Mouser, Farnell, DigiKey, etc.) look for:
 
-
+* the price (unit or bulk?),&#x20;
+* availability (is it end of life?),&#x20;
+* size (does it fit on the board?),&#x20;
+* functionalities (handy reliability mechanisms, etc.)
+{% endhint %}
 
 * What communication protocol does it use?
 
@@ -635,11 +636,48 @@ Some tips on soldering the node computer,&#x20;
 
 ## Receiver
 
+The receiver is a computer board, who’s only function is to receive those sensor messages, store them onto a microSD card and handle the radio.
 
+The receiver hardware diagram is presented in the figure below.
 
-### setup
+<figure><picture><source srcset=".gitbook/assets/receiver diagram dark@4x.png" media="(prefers-color-scheme: dark)"><img src=".gitbook/assets/receiver diagram light@4x.png" alt=""></picture><figcaption><p>Technical diagram of the receiver</p></figcaption></figure>
+
+### Technical specs
+
+{% tabs %}
+{% tab title="Tech specs" %}
+The receiver uses a [ESP32-S3-WROOM-1-N16R2](https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1\_wroom-1u\_datasheet\_en.pdf) module as a microcontroller.
+
+On the top surface it has,
+
+* a microSD socket for datalogging
+* a USB-C port to connect to a computer
+* boot and reset buttons like any Arduino board
+* a programmable Adafruit SK6812 RGB LED
+* a programmable mode button
+* a 4 pin JST-XH connector similar to the node computers for CAN and power
+* a CAN termination switch and a power switch to the rest of the system (nodes)
+* a Omron XW4K-04A1-V1 board side connector socket (see here for image) to receive 5V from a power source (battery, etc.) connected with a Omron XW4H-04A1 wire side connector plug
+
+On the underside it has,
+
+* a USB - Battery power switch, to disconnect the battery from the receiver MCU (hard reset)
+* a 433MHz RFM69HCW radio module
+* a male SMA radio antenna connector
+
+It can be programmed and display data on the serial port by connecting to a computer through the USB-C port, and opening an IDE (Arduino IDE, PlatformIO or ESP-IDF).
+{% endtab %}
+
+{% tab title="Pinout" %}
+
+{% endtab %}
+{% endtabs %}
+
+### Setup
 
 #### hardware
+
+
 
 #### software
 
