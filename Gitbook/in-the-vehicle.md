@@ -1,10 +1,8 @@
 # In the vehicle
 
-## NODE
+## Node
 
 The sensors are configured as nodes on the CAN bus, meaning they each are paired with a small computer board. The latter acts as the middleman between the sensor’s interfacing protocol (i.e. the language the sensor talks in) and the CAN bus (i.e. what the telemetry system talks in).
-
-
 
 The node computer hardware diagram is presented in the figure below.
 
@@ -566,7 +564,7 @@ The sensors come in all forms, but only one shape. They all have a standardised 
 
 The footprint has four M3 sized holes for support, and two rows of pin headers placed just like the [node computer pinout diagram](in-the-vehicle.md#technical-specs).
 
-The fusion PCB file can be found on the Github repository under **Hardware**, and has the pin header sensor connections already pre-defined to simplify the design.
+The fusion PCB file can be found on the [Github repository](https://github.com/augustjaubert/UCL-SEM-Telemetry-System) under **Hardware**, and has the pin header sensor connections already pre-defined to simplify the design.
 
 Some general help and thoughts on selecting a sensor:
 
@@ -584,9 +582,11 @@ e.g. to measure velocity, we could have had an RPM sensor or a GPS. GPS was a sa
 
 
 
-* What communcation protocol does it use?
+* What communication protocol does it use?
 
 Connecting to your sensor depends on the protocol the sensor uses to communicate. These can be Serial-Peripheral-Interface (SPI), Inter-Integrated Communication (I2C), UART or you have some general-purpose input/output (GPIO) pins that you can reprogram based on the ESP32-C3 or ESP32-S3 capabilities. The board also has an input for simple analog voltage reading up to 2.5V, however it is recommended to use the ADC shield instead of the ADC pins as they have lower resolution and impedance (essentially just worse, check out Espressif’s documentation).
+
+You can see the pinout of the node computer in the [technical specifications](in-the-vehicle.md#technical-specs).
 
 * Does it have an ECAD footprint available?
 
@@ -598,23 +598,44 @@ Often you are able to find the footprint ready-made by a retailer on their page 
 
 When it comes to wiring the sensor on the board and adding the necessary components around the chip, it is best to follow the datasheet given by the manufacturer (e.g. Texas Instruments). They often present example schematics showcasing the most common setups.
 
-Most of the sensors developed this year were chosen because they had been covered in online tutorials, and thus had already proven code and easy-to-use libraries for them. This makes it easy to pair with our node library, as you can see in the [sensor example](in-the-vehicle.md#example-sensor).
+Most of the sensors developed this year were chosen because they had been covered in online tutorials, and thus had already proven code and easy-to-use libraries for them. This makes it easy to pair with our node library, as you can see in the [sensor example](in-the-vehicle.md#node-library-to-code-a-node).
 
-#### Build a computer
+#### Build a node computer
 
-Tips on soldering
+If you need to order and assemble a new node computer, you can use the gerber files provided in the [Github repository](https://github.com/augustjaubert/UCL-SEM-Telemetry-System), and upload them to JLCPCB.
 
-Parts list (BOM)
+{% tabs %}
+{% tab title="3D Viewer" %}
+{% embed url="https://a360.co/3WZYaDd" %}
+{% endtab %}
 
-schematics
+{% tab title="Schematics" %}
+**Electrical Diagram**
 
+{% embed url="https://a360.co/3M0LLsb" %}
 
+{% file src=".gitbook/assets/Node computer schematic.pdf" %}
 
+**PCB footprint**
 
+{% embed url="https://a360.co/4fTyGyP" %}
+{% endtab %}
 
+{% tab title="Parts list (BOM)" %}
+<table><thead><tr><th>Qty</th><th>Value</th><th>Device</th><th>Package</th><th width="72">Parts</th><th width="120">Description</th><th width="136">Manufacturer</th><th>Link</th><th>Unit (£)</th><th>Total (£)</th></tr></thead><tbody><tr><td>1</td><td></td><td>PINHD-1X5</td><td>1X05</td><td>JP3</td><td>PIN HEADER</td><td>n/a</td><td>n/a</td><td>n/a</td><td>#VALUE!</td></tr><tr><td>1</td><td></td><td>PINHD-1X6</td><td>1X06</td><td>JP1</td><td>PIN HEADER</td><td>n/a</td><td>n/a</td><td>n/a</td><td>#VALUE!</td></tr><tr><td>2</td><td>0</td><td>R_CHIP-0805(2012-METRIC)</td><td>RESC2012X65</td><td>R3</td><td></td><td>n/a</td><td>n/a</td><td>n/a</td><td>#VALUE!</td></tr><tr><td>3</td><td>0.1 uF</td><td>C_CHIP-0805(2012-METRIC)</td><td>CAPC2012X110</td><td>C1</td><td></td><td>n/a</td><td>n/a</td><td>n/a</td><td>#VALUE!</td></tr><tr><td>2</td><td>60</td><td>R_CHIP-0805(2012-METRIC)</td><td>RESC2012X65</td><td>R1</td><td></td><td>n/a</td><td>n/a</td><td>n/a</td><td>#VALUE!</td></tr><tr><td>1</td><td>CDSOT23-T24CAN</td><td>CDSOT23-T24CAN</td><td>SOT95P230X117-3N</td><td>D1</td><td>CAN TVS Diode</td><td>Bourns</td><td><a href="https://www.mouser.co.uk/ProductDetail/Bourns/CDSOT23-T24CAN?qs=Z7P4xsdcg2LuAOb/zQ7xoQ%3D%3D">https://www.mouser.co.uk/ProductDetail/Bourns/CDSOT23-T24CAN?qs=Z7P4xsdcg2LuAOb/zQ7xoQ%3D%3D</a></td><td>0.288</td><td>0.288</td></tr><tr><td>1</td><td>JS102011JCQN</td><td>JS102011JCQN</td><td>JS102011JCQN</td><td>S1</td><td>Slide Switches .3A 6VDC SPDT VERT MNT SMT J BEND</td><td>C &#x26; K COMPONENTS</td><td><a href="https://www.mouser.co.uk/ProductDetail/CK/JS102011JCQN?qs=74EMXstkWMWQs9mNwlyl0g%3D%3D">https://www.mouser.co.uk/ProductDetail/CK/JS102011JCQN?qs=74EMXstkWMWQs9mNwlyl0g%3D%3D</a></td><td>0.728</td><td>0.728</td></tr><tr><td>2</td><td>JST-XH-04-PIN-LONG-PAD</td><td>JST-XH-04-PIN-LONG-PAD</td><td>JST-XH-04-PACKAGE-LONG-PAD</td><td>X1</td><td></td><td>n/a</td><td>n/a</td><td>n/a</td><td>#VALUE!</td></tr><tr><td>3</td><td>NC</td><td>C_CHIP-0805(2012-METRIC)</td><td>CAPC2012X110</td><td>C3</td><td></td><td>n/a</td><td>n/a</td><td>n/a</td><td>#VALUE!</td></tr><tr><td>1</td><td>PCM12SMTR</td><td>PCM12SMTR</td><td>PCM12SMTR</td><td>S3</td><td>Slide Switches 0.3A SPDT ON-ON</td><td>C &#x26; K COMPONENTS</td><td><a href="https://www.mouser.co.uk/ProductDetail/CK/PCM12SMTR?qs=mfFuHy8STfL3qrPSfCHA7w%3D%3D&#x26;_gl=1*1yvwsae*_ga*ODY2MzE2ODU2LjE2ODk3MDQzMTM.*_ga_15W4STQT4T*MTcwODAwMTEwMS40My4wLjE3MDgwMDExMDEuNjAuMC4w*_ga_1KQLCYKRX3*MTcwODAwMTEwMS4yNy4wLjE3MDgwMDExMDEuMC4wLjA">https://www.mouser.co.uk/ProductDetail/CK/PCM12SMTR?qs=mfFuHy8STfL3qrPSfCHA7w%3D%3D&#x26;_gl=1*1yvwsae*_ga*ODY2MzE2ODU2LjE2ODk3MDQzMTM.*_ga_15W4STQT4T*MTcwODAwMTEwMS40My4wLjE3MDgwMDExMDEuNjAuMC4w*_ga_1KQLCYKRX3*MTcwODAwMTEwMS4yNy4wLjE3MDgwMDExMDEuMC4wLjA</a>.</td><td>0.8</td><td>0.8</td></tr><tr><td>1</td><td>PMEG1020EJ</td><td>PMEG1020EJ</td><td>SOD-323</td><td>D4</td><td>Schottky Rectifier, 10 V, 2 A, Single, SOD-323, 2 Pins, 460 mV</td><td>NEXPERIA</td><td><a href="https://www.mouser.co.uk/ProductDetail/Nexperia/PMEG1020EJ115?qs=LOCUfHb8d9tlKh8c7mukrA%3D%3D">https://www.mouser.co.uk/ProductDetail/Nexperia/PMEG1020EJ115?qs=LOCUfHb8d9tlKh8c7mukrA%3D%3D</a></td><td>0.24</td><td>0.24</td></tr><tr><td>1</td><td>QWIIC_RIGHT_ANGLE</td><td>QWIIC_CONNECTORJS-1MM</td><td>JST04_1MM_RA</td><td>J1</td><td>SparkFun I2C Standard Qwiic Connector</td><td>n/a</td><td>n/a</td><td>n/a</td><td>#VALUE!</td></tr><tr><td>1</td><td>TCAN1462VDRQ1</td><td>TCAN1462VDRQ1</td><td>SOIC127P600X175-8N</td><td>IC2</td><td>CAN FD transceiver</td><td>Texas Instruments</td><td><a href="https://www.mouser.co.uk/ProductDetail/Texas-Instruments/TCAN1462VDRQ1?qs=rQFj71Wb1eU28cwJFt9kYg%3D%3D">https://www.mouser.co.uk/ProductDetail/Texas-Instruments/TCAN1462VDRQ1?qs=rQFj71Wb1eU28cwJFt9kYg%3D%3D</a></td><td>1.63</td><td>1.63</td></tr><tr><td>1</td><td>XIAO-ESP32C3</td><td>XIAO-ESP32C3</td><td>XIAO-ESP32C3-MODULE14P-2.54-21X17.8MM</td><td>U1</td><td>Seeed Studio XIAO ESP32C3</td><td>Seed</td><td><a href="https://thepihut.com/products/seeed-xiao-esp32c3">https://thepihut.com/products/seeed-xiao-esp32c3</a></td><td>5</td><td>5</td></tr></tbody></table>
+{% endtab %}
+{% endtabs %}
 
+Some tips on soldering the node computer,&#x20;
+
+* Start with the bottom surface with the slide switch
+* Progress to the other small components
+* Place large components before placing the smaller ones around it (e.g. CAN transceiver before its capacitors)
+* On the top side, place the switch first, then the MCU, then the JST sockets and finally the female pin headers. Note that the pin headers are male on the project, which is not a problem since male and female have the same PCB footprint.
 
 ## Receiver
+
+
 
 ### setup
 
