@@ -896,7 +896,7 @@ Some tips on soldering the receiver,
 
 ## Sensors
 
-
+###
 
 ## 2024 configuration
 
@@ -916,7 +916,20 @@ Note that because of how the voltmeter shield was designed, it can be used to me
 
 * An Inertial Measurement Unit (IMU) - placed close to the centre of mass
 * A GPS - with antenna
+
+
+
+<figure><img src=".gitbook/assets/image (7).png" alt="" width="375"><figcaption><p>Outside view of the vehicle loom</p></figcaption></figure>
+
+<div align="center" data-full-width="true">
+
+<figure><img src=".gitbook/assets/image (6).png" alt="" width="375"><figcaption><p>The placement during competition became very difficult due to the space constraints</p></figcaption></figure>
+
+</div>
+
 * An LCD screen - for the driver
+
+<figure><img src=".gitbook/assets/image (5).png" alt="" width="375"><figcaption><p>Driver display showing a test setup</p></figcaption></figure>
 
 
 
