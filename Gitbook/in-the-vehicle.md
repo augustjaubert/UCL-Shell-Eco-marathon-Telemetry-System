@@ -102,6 +102,16 @@ example_sketch (folder)
 
 </details>
 
+4. Connecting to the node computer board
+
+To connect the node computer to the arduino sketch, select the top-left text box **Select Board**.
+
+<figure><img src=".gitbook/assets/image.png" alt="" width="375"><figcaption></figcaption></figure>
+
+For C3 models - XIAO\_ESP32C3
+
+For S3 models - XIAO\_ESP32S3
+
 ### How to use
 
 Find the quick guide in the [overview section](./#quick-installation-guide).
@@ -136,7 +146,7 @@ If it seems as though the Receiver is not seeing the sensor messages, or somethi
 
 1. Disassemble the node.
 2. Connect the node computer to your laptop through USB.
-3. Open Arduino IDE, and check that you have the correct board definition in the top-left text box.
+3. Open Arduino IDE, and check that you have the correct board definition in the top-left text box **Select Board**.
 
 <figure><img src=".gitbook/assets/image.png" alt="" width="375"><figcaption></figcaption></figure>
 
@@ -650,14 +660,16 @@ The receiver uses a [ESP32-S3-WROOM-1-N16R2](https://www.espressif.com/sites/def
 
 On the top surface it has,
 
-* a microSD socket for datalogging
+* a microSD socket for datalogging using the ESP's native SD\_MMC library
 * a USB-C port to connect to a computer
 * boot and reset buttons like any Arduino board
-* a programmable Adafruit SK6812 RGB LED
+* an Adafruit SK6812 RGB LED, programmable with [Adafruit's Neopixel Library](https://www.arduino.cc/reference/en/libraries/adafruit-neopixel/)
 * a programmable mode button
 * a 4 pin JST-XH connector similar to the node computers for CAN and power
 * a CAN termination switch and a power switch to the rest of the system (nodes)
-* a Omron XW4K-04A1-V1 board side connector socket (see here for image) to receive 5V from a power source (battery, etc.) connected with a Omron XW4H-04A1 wire side connector plug
+* a Omron XW4K-04A1-V1 board side connector socket to receive 5V from a power source (battery, etc.) connected with a Omron XW4H-04A1 wire side connector plug
+
+<figure><img src=".gitbook/assets/image (4).png" alt=""><figcaption><p>Image of the soldered Omron XW4K-04A1-V1 board side connector socket</p></figcaption></figure>
 
 On the underside it has,
 
