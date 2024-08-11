@@ -106,7 +106,7 @@ example_sketch (folder)
 
 To connect the node computer to the arduino sketch, select the top-left text box **Select Board**.
 
-<figure><img src=".gitbook/assets/image.png" alt="" width="375"><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (2).png" alt="" width="375"><figcaption></figcaption></figure>
 
 For C3 models - XIAO\_ESP32C3
 
@@ -148,7 +148,7 @@ If it seems as though the Receiver is not seeing the sensor messages, or somethi
 2. Connect the node computer to your laptop through USB.
 3. Open Arduino IDE, and check that you have the correct board definition in the top-left text box **Select Board**.
 
-<figure><img src=".gitbook/assets/image.png" alt="" width="375"><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (2).png" alt="" width="375"><figcaption></figcaption></figure>
 
 <details>
 
@@ -181,13 +181,13 @@ For S3 models - XIAO\_ESP32S3
 
 S3 models are identifiable by the writing on the sticker and the presence of solderable pins on the bottom, as seen on the right side of the image below.
 
-<img src=".gitbook/assets/image (1).png" alt="" data-size="original">
+<img src=".gitbook/assets/image (1) (1).png" alt="" data-size="original">
 
 </details>
 
 4. Open the serial monitor, in the top-right corner.
 
-<figure><img src=".gitbook/assets/image (2).png" alt="" width="188"><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (2) (1).png" alt="" width="188"><figcaption></figcaption></figure>
 
 This will present what is output on the serial port by the board, which you can use to deduce where the issues are coming from.
 
@@ -642,7 +642,7 @@ Some tips on soldering the node computer,&#x20;
 * Start with the bottom surface with the slide switch
 * Progress to the other small components
 * Place large components before placing the smaller ones around it (e.g. CAN transceiver before its capacitors)
-* On the top side, place the switch first, then the MCU, then the JST sockets and finally the female pin headers. Note that the pin headers are male on the project, which is not a problem since male and female have the same PCB footprint.
+* On the top side, place the switch first, then the MCU, then the JST sockets and finally the female pin headers. Note that the pin headers are male on the Fusion 360 project, which is not a problem since male and female have the same PCB footprint.
 
 ## Receiver
 
@@ -681,32 +681,245 @@ It can be programmed and display data on the serial port by connecting to a comp
 {% endtab %}
 
 {% tab title="Pinout" %}
-
+| Pin Description              |  ESP32-S3-WROOM-1-N16R2 |
+| ---------------------------- | ----------------------- |
+| RFM69\_DIO\_0                | GPIO 3                  |
+| RFM69\_DIO\_1                | GPIO 9                  |
+| RFM69\_DIO\_2                | GPIO 10                 |
+| RFM69\_RESET                 | GPIO 48                 |
+| RFM69\_NSS (SPI Chip Select) | GPIO 47                 |
+| SPI\_SCK (RMF69)             | GPIO 12                 |
+| SPI\_MOSI (RMF69)            | GPIO 11                 |
+| SPI\_MISO (RFM69)            | GPIO 13                 |
+| CAN\_TX                      | GPIO 18                 |
+| CAN\_RX                      | GPIO 8                  |
+| CAN\_STANDBY                 | GPIO 35                 |
+| MODE\_BUTTON                 | GPIO 14                 |
+| NEOPIXEL\_LED                | GPIO 21                 |
+| SD\_DAT0                     | GPIO 6                  |
+| SD\_DAT1                     | GPIO 5                  |
+| SD\_DAT2                     | GPIO 17                 |
+| SD\_DAT3                     | GPIO 16                 |
+| SD\_CMD                      | GPIO 15                 |
+| SD\_CD                       | GPIO 4                  |
 {% endtab %}
 {% endtabs %}
 
+
+
+
+
 ### Setup
 
-#### hardware
+#### Hardware
 
+1. Assembling the receiver case (in ascending order)
 
+<figure><img src=".gitbook/assets/receiver assembly light@4x.png" alt=""><figcaption></figcaption></figure>
 
-#### software
+2. Attaching the node to the CAN/Power bus
+
+Just like on the nodes, there is a JST-XH socket to connect the receiver to the CAN and Power bus.
+
+The Omron socket also has CAN lines so that if a power source also has a CAN output (e.g. Battery BMS system outputting CAN messages), they can be attached to the same connector plug.&#x20;
+
+You can see the connection placement in the centre of the image below, where <mark style="color:orange;">L is for CAN\_LOW</mark>, <mark style="color:orange;">H for CAN\_HIGH</mark>, <mark style="color:orange;">- for GROUND</mark> and <mark style="color:orange;">5V for +5V</mark>.
+
+<figure><img src=".gitbook/assets/image.png" alt="" width="375"><figcaption></figcaption></figure>
+
+3. Installing in the vehicle
+
+Just like for [a node](in-the-vehicle.md#hardware), you can then place the receiver anywhere in the vehicle.
+
+#### Software
 
 Similar to in the [node software setup](in-the-vehicle.md#software).
 
+<details>
+
+<summary>Similar steps</summary>
+
+1. Installing the integrated development environment (IDE)
+
+The system works similar to most Arduino projects, as it has been coded in C++ using the Arduino IDE.
+
+Any IDE will do the job, however we recommend using the following:
+
+[Arduino IDE](https://www.arduino.cc/en/software) <mark style="color:orange;">is the easiest to use, has plenty of documentation and forum help and is sufficient almost 99% of the time.</mark>
+
+[Platform IO](https://platformio.org/) (through VSCode) is essentially a pro version, where you have more control but requires a manual setup.
+
+[ESP-IDF](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/index.html#introduction) is the MCU's native IDE, which gives more liberty in using all its functions.
+
+2. ESP board definitions
+
+The ESP boards (MCU) are not defined by default in the Arduino IDE. You will have to add them initially to be able to connect to the nodes and others.
+
+To do this in the Arduino IDE, navigate to **File > Preferences**, and fill **"Additional Boards Manager URLs"** with the url below: [_https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package\_esp32\_index.json_](https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package\_esp32\_index.json)
+
+Navigate to **Tools > Board > Boards Manager...**, type the keyword "**esp32**" in the search box, select the latest version of **esp32**, and install it.
+
+</details>
+
+3. Installing the receiver library
+
+Download the 15 files from the [Github repository](https://github.com/augustjaubert/UCL-SEM-Telemetry-System) in the Receiver folder.
+
+To add the receiver library to your arduino sketch[^2], add all the files in your sketch folder.
+
+<details>
+
+<summary>Example project organisation</summary>
+
+<pre><code>example_sketch (folder)
+-> Receiver.cpp
+-> Receiver.h
+-> Config.h
+-> SDCardHandler.cpp
+-> SDCardHandler.h
+<strong>-> RadioHandler.cpp
+</strong>-> RadioHandler.h
+-> ModeConfig.cpp
+-> ModeConfig.h
+-> DataProcessing.cpp
+-> DataProcessing.h
+-> ConfigFileParser.cpp
+-> ConfigFileParser.h
+-> CANMessageParser.cpp
+-> CANMessageParser.h
+-> example_sketch.ino (arduino sketch)
+</code></pre>
+
+</details>
+
+4. Connecting to the receiver board
+
+To connect the receiver board to the arduino sketch, select the top-left text box **Select Board** and select <mark style="color:orange;">**ESP32-S3-USB-OTG**</mark>.
+
+<figure><img src=".gitbook/assets/image (2).png" alt="" width="375"><figcaption></figcaption></figure>
+
+1. <mark style="color:orange;">Assemble the receiver</mark> (board and case).
+2. <mark style="color:orange;">Connect a CAN cable</mark> to the JST sockets to add the receiver to the CAN bus.
+3. Usually the receiver is added at the end of the bus, therefore <mark style="color:orange;">switch the CAN termination ON.</mark>
+   1. If the power source connector (Omron) also has a CAN input, then <mark style="color:orange;">switch the CAN termination OFF.</mark> There will need to be a CAN termination at the power source side of the CAN bus.
 
 
 
+**Troubleshooting**
+
+If it seems as though the receiver is not working as intended:
+
+1. Disassemble the receiver.
+2. Connect the receiver board to your laptop through USB.
+3. Open Arduino IDE, and check that you have the correct board definition in the top-left text box **Select Board**.
+
+<details>
+
+<summary>No board appearing</summary>
+
+If you don't see a board appearing, then the MCU is not powered, or the serial connection has been severed. This can be because,
+
+* The USB cable is not properly connected either to the node or laptop
+* The MCU is not receiving power, which can be checked with a multimeter on the MCU 3.3V pins to see if it detects a voltage. This can be due to a severed power connection on the circuit. It is recommended to check the Espressif's chip datasheet in detail.
+* The serial connection is severed, which can be because&#x20;
+  * the USB connector on the MCU has been damaged,&#x20;
+  * or because something (e.g. static electricity) has caused your laptop to disconnect the USB port (safety mode). It happens that connection is re-established after some time.
+    * You can first try to reset the board by clicking the **RESET BUTTON** once while the board is connected to your PC. If that does not work, hold the **BOOT BUTTON**, connect the board to your PC while holding the **BOOT** button, and then release it to enter **bootloader mode**.
+  * a very unlucky reason can be that the MCU chip has failed. This has happened a few times in the past, and can be fixed by carefully desoldering the MCU chip with a hot air gun and heat-resistant Capton tape around other components, to then either replacing with a new chip or de-bricking the "dead" chip by connecting it with a test board module (possibly left in the MechSpace Workshop C drawers).
+
+<img src=".gitbook/assets/image (1).png" alt="" data-size="original">
+
+</details>
+
+<details>
+
+<summary>The wrong board is appearing</summary>
+
+If the wrong board is appearing, that is a good sign because it recognises something.
+
+You can open the text box, click on select <mark style="color:orange;">other board and port...</mark> and search for the appropriate board (ESP32-S3-USB-OTG).
+
+</details>
+
+4. Open the serial monitor, in the top-right corner.
+
+<figure><img src=".gitbook/assets/image (2) (1).png" alt="" width="188"><figcaption></figcaption></figure>
+
+This will present what is output on the serial port by the board, which you can use to deduce where the issues are coming from.
+
+{% hint style="info" %}
+The serial output will only output things that it has been coded to output, so it is your responsibility to leave serial print commands in your code for debugging.
+
+This also means that you can check the receiver sketch and library codebase to find out where from the serial print output is coming from in the code.
+{% endhint %}
+
+
+
+### Development
+
+#### Receiver Library
+
+
+
+#### Build a receiver
+
+If you need to order and assemble a new receiver, you can use the gerber files provided in the [Github repository](https://github.com/augustjaubert/UCL-SEM-Telemetry-System), and upload them to JLCPCB.
+
+{% tabs %}
+{% tab title="3D Viewer" %}
+{% embed url="https://a360.co/3wpQ9fS" %}
+{% endtab %}
+
+{% tab title="Schematics" %}
+**Electrical Diagram**
+
+{% embed url="https://a360.co/3M3JKve" %}
+
+{% file src=".gitbook/assets/receiver v2ra schematic.pdf" %}
+
+**PCB footprint**
+
+{% embed url="https://a360.co/3WZH2gG" %}
+{% endtab %}
+
+{% tab title="Parts list (BOM)" %}
+<table><thead><tr><th>Qty</th><th>Value</th><th>Device</th><th>Package</th><th>Parts</th><th>Description</th><th>MANUFACTURER_NAME</th><th>MANUFACTURER_PART_NUMBER</th><th width="94">Link</th><th>Unit (£)</th><th>Total (£)</th></tr></thead><tbody><tr><td>1</td><td></td><td>SMA CONNECTOR EDGE</td><td>SMA_EDGELAUNCH</td><td>X1</td><td>SMA Female Connector</td><td>Amazon</td><td>N/A</td><td><a href="https://www.amazon.co.uk/100PCS-Female-Coaxial-Connector-Material/dp/B0B2KTBDZX/ref=sr_1_1?crid=15EKR3UBDX0H2&#x26;keywords=kerlife+10Pcs+Brass+SMA+Female+PCB+Panel+Mount+Connector+Female+Base+Socket+Jack+50+Ohm+RF+Connectors+for+Wireless+Device+Equipments&#x26;qid=1708338485&#x26;sprefix=kerlife+10pcs+brass+sma+female+pcb+panel+mount+connector+female+base+socket+jack+50+ohm+rf+connectors+for+wireless+device+equipments,aps,64&#x26;sr=8-1">https://www.amazon.co.uk/100PCS-Female-Coaxial-Connector-Material/dp/B0B2KTBDZX/ref=sr_1_1?crid=15EKR3UBDX0H2&#x26;keywords=kerlife+10Pcs+Brass+SMA+Female+PCB+Panel+Mount+Connector+Female+Base+Socket+Jack+50+Ohm+RF+Connectors+for+Wireless+Device+Equipments&#x26;qid=1708338485&#x26;sprefix=kerlife+10pcs+brass+sma+female+pcb+panel+mount+connector+female+base+socket+jack+50+ohm+rf+connectors+for+wireless+device+equipments,aps,64&#x26;sr=8-1</a></td><td>0.1953</td><td>0.1953</td></tr><tr><td>1</td><td>0</td><td>R_CHIP-0603(1608-METRIC)</td><td>RESC1608X60</td><td>R22</td><td>Resistor Fixed - SMD</td><td></td><td></td><td></td><td></td><td>0</td></tr><tr><td>2</td><td>0.1 uF</td><td>C_CHIP-0603(1608-METRIC)</td><td>CAPC1608X85</td><td>C1</td><td>Capacitor - Ceramic SMD</td><td></td><td></td><td></td><td></td><td>0</td></tr><tr><td>7</td><td>0.1uF</td><td>C_CHIP-0603(1608-METRIC)</td><td>CAPC1608X85</td><td>C2</td><td>Capacitor - Ceramic SMD</td><td></td><td></td><td></td><td></td><td>0</td></tr><tr><td>2</td><td>0.1uF (NC)</td><td>C_CHIP-0603(1608-METRIC)</td><td>CAPC1608X85</td><td>C12</td><td>Capacitor - Ceramic SMD</td><td></td><td></td><td></td><td></td><td>0</td></tr><tr><td>2</td><td>100k</td><td>R_CHIP-0603(1608-METRIC)</td><td>RESC1608X60</td><td>R2</td><td>Resistor Fixed - SMD</td><td></td><td></td><td></td><td></td><td>0</td></tr><tr><td>12</td><td>10k</td><td>R_CHIP-0603(1608-METRIC)</td><td>RESC1608X60</td><td>R4</td><td>Resistor Fixed - SMD</td><td></td><td></td><td></td><td></td><td>0</td></tr><tr><td>4</td><td>10uF</td><td>C_CHIP-0805(2012-METRIC)</td><td>CAPC2012X110</td><td>C5</td><td>Capacitor - Ceramic SMD</td><td></td><td></td><td></td><td></td><td>0</td></tr><tr><td>1</td><td>1k</td><td>R_CHIP-0603(1608-METRIC)</td><td>RESC1608X60</td><td>R25</td><td>Resistor Fixed - Generic</td><td></td><td></td><td></td><td></td><td>0</td></tr><tr><td>1</td><td>1uF</td><td>C_CHIP-0603(1608-METRIC)</td><td>CAPC1608X85</td><td>C20</td><td>Capacitor - Ceramic SMD</td><td></td><td></td><td></td><td></td><td>0</td></tr><tr><td>1</td><td>300</td><td>R_CHIP-0603(1608-METRIC)</td><td>RESC1608X60</td><td>R12</td><td>Resistor Fixed - Generic</td><td></td><td></td><td></td><td></td><td>0</td></tr><tr><td>1</td><td>400k</td><td>R_CHIP-0603(1608-METRIC)</td><td>RESC1608X60</td><td>R21</td><td>Resistor Fixed - Generic</td><td></td><td></td><td></td><td></td><td>0</td></tr><tr><td>2</td><td>5.1k</td><td>R_CHIP-0603(1608-METRIC)</td><td>RESC1608X60</td><td>R3</td><td>Resistor Fixed - SMD</td><td></td><td></td><td></td><td></td><td>0</td></tr><tr><td>1</td><td>500</td><td>R_CHIP-0603(1608-METRIC)</td><td>RESC1608X60</td><td>R1</td><td>Resistor Fixed - SMD</td><td></td><td></td><td></td><td></td><td>0</td></tr><tr><td>2</td><td>60</td><td>R_CHIP-0805(2012-METRIC)</td><td>RESC2012X65</td><td>R8_C</td><td>Resistor Fixed - SMD</td><td></td><td></td><td></td><td></td><td>0</td></tr><tr><td>4</td><td>NC</td><td>C_CHIP-0603(1608-METRIC)</td><td>CAPC1608X85</td><td>C4</td><td>Capacitor - Ceramic SMD</td><td></td><td></td><td></td><td></td><td>0</td></tr><tr><td>2</td><td>NC</td><td>R_CHIP-0603(1608-METRIC)</td><td>RESC1608X60</td><td>R14</td><td>Resistor Fixed - SMD</td><td></td><td></td><td></td><td></td><td>0</td></tr><tr><td>1</td><td>500ASSP1M6QE</td><td>500ASSP1M6QE</td><td>500ASSP1M6QE</td><td>S1</td><td>Power Slide Switch</td><td>E-SWITCH</td><td>500ASSP1M6QE</td><td><a href="https://www.mouser.co.uk/ProductDetail/E-Switch/500ASSP1M6QE?qs=%252BZnE/xbLNR9QgzPkMZRAQg%3D%3D">https://www.mouser.co.uk/ProductDetail/E-Switch/500ASSP1M6QE?qs=%252BZnE/xbLNR9QgzPkMZRAQg%3D%3D</a></td><td>3.37</td><td>3.37</td></tr><tr><td>1</td><td>CDSOT23-T24CAN</td><td>CDSOT23-T24CAN</td><td>SOT95P230X117-3N</td><td>D1</td><td>CAN TVS Diode</td><td>Bourns</td><td>CDSOT23-T24CAN</td><td><a href="https://www.mouser.co.uk/ProductDetail/Bourns/CDSOT23-T24CAN?qs=Z7P4xsdcg2LuAOb/zQ7xoQ%3D%3D">https://www.mouser.co.uk/ProductDetail/Bourns/CDSOT23-T24CAN?qs=Z7P4xsdcg2LuAOb/zQ7xoQ%3D%3D</a></td><td>0.288</td><td>0.288</td></tr><tr><td>1</td><td>COM-13909</td><td>COM-13909</td><td>MOD_COM-13909</td><td>RFM69</td><td>Rfm69hcw General ISM &#x3C; 1GHz Transceiver Module 915/433MHz Surface Mount</td><td>HOPERF</td><td>RFM69HCW</td><td><a href="https://www.mouser.co.uk/ProductDetail/Adafruit/5693?qs=mELouGlnn3fnO8nGmYJgWQ%3D%3D">https://www.mouser.co.uk/ProductDetail/Adafruit/5693?qs=mELouGlnn3fnO8nGmYJgWQ%3D%3D</a></td><td>4.76</td><td>4.76</td></tr><tr><td>1</td><td>ESP32-S3-WROOM-1-N16R2</td><td>ESP32-S3-WROOM-1-N16R2</td><td>XCVR_ESP32-S3-WROOM-1-N16R2</td><td>U1</td><td>Espressif ESP32-S3 Microcontroller</td><td>Espressif</td><td>ESP32-S3-WROOM-1-N16R2</td><td><a href="https://www.amazon.co.uk/gp/product/B09TPMJ8SN/ref=ox_sc_saved_title_1?smid=A30DC7701CXIBH&#x26;psc=1">https://www.amazon.co.uk/gp/product/B09TPMJ8SN/ref=ox_sc_saved_title_1?smid=A30DC7701CXIBH&#x26;psc=1</a></td><td>1.856</td><td>1.856</td></tr><tr><td>1</td><td>JS102011JCQN</td><td>JS102011JCQN</td><td>JS102011JCQN</td><td>S3</td><td>Slide Switch .3A 6VDC SPDT VERT MNT SMT J BEND (CAN Termination)</td><td>C &#x26; K COMPONENTS</td><td>JS102011JCQN</td><td><a href="https://www.mouser.co.uk/ProductDetail/CK/JS102011JCQN?qs=74EMXstkWMWQs9mNwlyl0g%3D%3D">https://www.mouser.co.uk/ProductDetail/CK/JS102011JCQN?qs=74EMXstkWMWQs9mNwlyl0g%3D%3D</a></td><td>0.728</td><td>0.728</td></tr><tr><td>1</td><td>JST-XH-04-PIN-LONG-PAD</td><td>JST-XH-04-PIN-LONG-PAD</td><td>JST-XH-04-PACKAGE-LONG-PAD</td><td>X4</td><td>JST XH Connector 4 Pin</td><td>Amazon</td><td>N/A</td><td><a href="https://www.amazon.co.uk/sourcing-map-Connector-Housing-Adapter/dp/B0BTGWYK4Y/ref=sr_1_1?crid=1DS3556JRIRSL&#x26;keywords=sourcing+map+2.54mm+Pitch+XH+Connector+Kits+4+Pin+Male+Female+Header+Right+Angle+Socket+Housing+Cable+Adapter+and+Crimp+DIP+Kits,+50+Set(300pcs)&#x26;qid=1708336662&#x26;sprefix=sourcing+map+2.54mm+pitch+xh+connector+kits+4+pin+male+female+header+right+angle+socket+housing+cable+adapter+and+crimp+dip+kits+50+set+300pcs+,aps,121&#x26;sr=8-1&#x26;th=1">https://www.amazon.co.uk/sourcing-map-Connector-Housing-Adapter/dp/B0BTGWYK4Y/ref=sr_1_1?crid=1DS3556JRIRSL&#x26;keywords=sourcing+map+2.54mm+Pitch+XH+Connector+Kits+4+Pin+Male+Female+Header+Right+Angle+Socket+Housing+Cable+Adapter+and+Crimp+DIP+Kits,+50+Set(300pcs)&#x26;qid=1708336662&#x26;sprefix=sourcing+map+2.54mm+pitch+xh+connector+kits+4+pin+male+female+header+right+angle+socket+housing+cable+adapter+and+crimp+dip+kits+50+set+300pcs+,aps,121&#x26;sr=8-1&#x26;th=1</a></td><td>0.02496667</td><td>0.02496667</td></tr><tr><td>1</td><td>LM1117MPX-3.3_NOPB</td><td>LM1117MPX-3.3_NOPB</td><td>SOT230P700X180-4N</td><td>IC3</td><td>Space saving 800-mA low-dropout linear regulator with internal current limit</td><td>Texas Instruments</td><td>LM1117MPX-3.3/NOPB</td><td><a href="https://www.mouser.co.uk/ProductDetail/Texas-Instruments/LM1117MPX-3.3-NOPB?qs=X1J7HmVL2ZHRbBIxXi4utg%3D%3D">https://www.mouser.co.uk/ProductDetail/Texas-Instruments/LM1117MPX-3.3-NOPB?qs=X1J7HmVL2ZHRbBIxXi4utg%3D%3D</a></td><td>0.886</td><td>0.886</td></tr><tr><td>1</td><td>MEM2075-00-140-01-A</td><td>MEM2075-00-140-01-A</td><td>MEM20750014001A</td><td>J1</td><td>MEM2075-00-140-01-A - MICRO SD CARD CONN</td><td>GCT</td><td>MEM2075-00-140-01-A</td><td><a href="https://www.mouser.co.uk/ProductDetail/GCT/MEM2075-00-140-01-A?qs=KUoIvG/9IlZvfWpeERlq3Q%3D%3D">https://www.mouser.co.uk/ProductDetail/GCT/MEM2075-00-140-01-A?qs=KUoIvG/9IlZvfWpeERlq3Q%3D%3D</a></td><td>1.58</td><td>1.58</td></tr><tr><td>1</td><td>NEOPIXEL</td><td>1655</td><td>1655</td><td>LED1</td><td>NeoPixel 5050 RGB LED with Integrated Driver Chip</td><td>Adafruit</td><td>NeoPixel 5050 - 1655</td><td><a href="https://www.mouser.co.uk/ProductDetail/Adafruit/1655?qs=GURawfaeGuATdkjqVQs49g%3D%3D">https://www.mouser.co.uk/ProductDetail/Adafruit/1655?qs=GURawfaeGuATdkjqVQs49g%3D%3D</a></td><td>0.36</td><td>0.36</td></tr><tr><td>1</td><td>PCM12SMTR</td><td>PCM12SMTR</td><td>PCM12SMTR</td><td>S2</td><td>Slide Switches 0.3A SPDT ON-ON (USB Switch)</td><td>C &#x26; K COMPONENTS</td><td>PCM12SMTR</td><td><a href="https://www.mouser.co.uk/ProductDetail/CK/PCM12SMTR?qs=mfFuHy8STfL3qrPSfCHA7w%3D%3D&#x26;_gl=1*1yvwsae*_ga*ODY2MzE2ODU2LjE2ODk3MDQzMTM.*_ga_15W4STQT4T*MTcwODAwMTEwMS40My4wLjE3MDgwMDExMDEuNjAuMC4w*_ga_1KQLCYKRX3*MTcwODAwMTEwMS4yNy4wLjE3MDgwMDExMDEuMC4wLjA">https://www.mouser.co.uk/ProductDetail/CK/PCM12SMTR?qs=mfFuHy8STfL3qrPSfCHA7w%3D%3D&#x26;_gl=1*1yvwsae*_ga*ODY2MzE2ODU2LjE2ODk3MDQzMTM.*_ga_15W4STQT4T*MTcwODAwMTEwMS40My4wLjE3MDgwMDExMDEuNjAuMC4w*_ga_1KQLCYKRX3*MTcwODAwMTEwMS4yNy4wLjE3MDgwMDExMDEuMC4wLjA</a>.</td><td>0.8</td><td>0.8</td></tr><tr><td>1</td><td>PMEG1020EJ</td><td>PMEG1020EJ</td><td>SOD-323</td><td>D4</td><td>Schottky Rectifier, 10 V, 2 A, Single, SOD-323, 2 Pins, 460 mV</td><td>NEXPERIA</td><td></td><td><a href="https://www.mouser.co.uk/ProductDetail/Nexperia/PMEG1020EJ115?qs=LOCUfHb8d9tlKh8c7mukrA%3D%3D">https://www.mouser.co.uk/ProductDetail/Nexperia/PMEG1020EJ115?qs=LOCUfHb8d9tlKh8c7mukrA%3D%3D</a></td><td>0.24</td><td>0.24</td></tr><tr><td>3</td><td>PTS841ESDGKPSMTRLFS</td><td>PTS841ESDGKPSMTRLFS</td><td>PTS841ESDGKPSMTRLFS</td><td>BOOT</td><td>Side-actuated tactile switch</td><td>C&#x26;K</td><td>PTS841 ESD GKP SMTR LFS</td><td><a href="https://www.mouser.co.uk/ProductDetail/CK/PTS841-ESD-GKP-SMTR-LFS?qs=d0WKAl%252BL4KbeUlwuiSQZWA%3D%3D">https://www.mouser.co.uk/ProductDetail/CK/PTS841-ESD-GKP-SMTR-LFS?qs=d0WKAl%252BL4KbeUlwuiSQZWA%3D%3D</a></td><td>0.312</td><td>0.936</td></tr><tr><td>1</td><td>SRV05-4.TCT</td><td>SRV05-4.TCT</td><td>SOT95P280X145-6N</td><td>D2</td><td>USB TVS Diode ESD Suppressor</td><td>Semtech</td><td>SRV05-4.TCT</td><td><a href="https://www.mouser.co.uk/ProductDetail/Semtech/SRV05-4.TCT?qs=rBWM4%252BvDhIe0tfPjqKjR5Q%3D%3D">https://www.mouser.co.uk/ProductDetail/Semtech/SRV05-4.TCT?qs=rBWM4%252BvDhIe0tfPjqKjR5Q%3D%3D</a></td><td>0.808</td><td>0.808</td></tr><tr><td>1</td><td>TCAN1462VDRQ1</td><td>TCAN1462VDRQ1</td><td>SOIC127P600X175-8N</td><td>CAN_T</td><td>CAN FD transceiver</td><td>Texas Instruments</td><td>TCAN1462VDRQ1</td><td><a href="https://www.mouser.co.uk/ProductDetail/Texas-Instruments/TCAN1462VDRQ1?qs=rQFj71Wb1eU28cwJFt9kYg%3D%3D">https://www.mouser.co.uk/ProductDetail/Texas-Instruments/TCAN1462VDRQ1?qs=rQFj71Wb1eU28cwJFt9kYg%3D%3D</a></td><td>1.63</td><td>1.63</td></tr><tr><td>1</td><td>TPS2110APWR</td><td>TPS2110APWR</td><td>SOP65P640X120-8N</td><td>IC2</td><td>Autoswitching Power Mux</td><td>Texas Instruments</td><td>TPS2110APWR</td><td><a href="https://www.mouser.co.uk/ProductDetail/Texas-Instruments/TPS2110APWR?qs=ojKcPFmCWSW5gmLyPB8quA%3D%3D">https://www.mouser.co.uk/ProductDetail/Texas-Instruments/TPS2110APWR?qs=ojKcPFmCWSW5gmLyPB8quA%3D%3D</a></td><td>1.3</td><td>1.3</td></tr><tr><td>1</td><td>TYPE-C-31-M-12</td><td>TYPE-C-31-M-12</td><td>HRO_TYPE-C-31-M-12</td><td>J2</td><td>USB Type C Connector (JLCPCB Assembled)</td><td>HRO Electronics Co.</td><td>TYPE-C-31-M-12</td><td><a href="https://jlcpcb.com/partdetail/Korean_HropartsElec-TYPE_C_31_M12/C165948">https://jlcpcb.com/partdetail/Korean_HropartsElec-TYPE_C_31_M12/C165948</a></td><td>0.157</td><td>0.157</td></tr><tr><td>1</td><td>XW4K-04A1-V1CONN_XW4K-04A1_OMR</td><td>XW4K-04A1-V1CONN_XW4K-04A1_OMR</td><td>CONN_XW4K-04A1_OMR</td><td>J3</td><td>Pluggable Terminal Block 4 pin Vertical Port</td><td>Omron</td><td>XW4K-04A1-V1</td><td><a href="https://www.mouser.co.uk/ProductDetail/Omron-Electronics/XW4K-04A1-V1?qs=wYonFgBYHKlPZJOhR4CEXw%3D%3D&#x26;countryCode=GB&#x26;currencyCode=GBP&#x26;_gl=1*1bs521v*_ga*ODY2MzE2ODU2LjE2ODk3MDQzMTM.*_ga_1KQLCYKRX3*MTcwODMzMjk4NS4xMi4xLjE3MDgzMzI5ODguMC4wLjA.*_ga_15W4STQT4T*MTcwODMzMjk4NS4yOC4xLjE3MDgzMzI5ODguNTcuMC4w">https://www.mouser.co.uk/ProductDetail/Omron-Electronics/XW4K-04A1-V1?qs=wYonFgBYHKlPZJOhR4CEXw%3D%3D&#x26;countryCode=GB&#x26;currencyCode=GBP&#x26;_gl=1*1bs521v*_ga*ODY2MzE2ODU2LjE2ODk3MDQzMTM.*_ga_1KQLCYKRX3*MTcwODMzMjk4NS4xMi4xLjE3MDgzMzI5ODguMC4wLjA.*_ga_15W4STQT4T*MTcwODMzMjk4NS4yOC4xLjE3MDgzMzI5ODguNTcuMC4w</a></td><td>1.79</td><td>1.79</td></tr><tr><td>1</td><td>XW4H-04A1</td><td>XW4H-04A1</td><td>XW4H-04A1</td><td>N/A</td><td>Pluggable Terminal Blocks PCB Terminal Block Wire Side, 4 con</td><td>Omron</td><td>XW4H-04A1</td><td><a href="https://www.mouser.co.uk/ProductDetail/Omron-Electronics/XW4H-04A1?qs=gqBM4hNBiUXOkrvf5L3rEA%3D%3D&#x26;countryCode=GB&#x26;currencyCode=GBP&#x26;_gl=1*1d1by1q*_ga*ODY2MzE2ODU2LjE2ODk3MDQzMTM.*_ga_15W4STQT4T*MTcwODMzMjk4NS4yOC4xLjE3MDgzMzI5OTEuNTQuMC4w*_ga_1KQLCYKRX3*MTcwODMzMjk4NS4xMi4xLjE3MDgzMzI5OTEuMC4wLjA">https://www.mouser.co.uk/ProductDetail/Omron-Electronics/XW4H-04A1?qs=gqBM4hNBiUXOkrvf5L3rEA%3D%3D&#x26;countryCode=GB&#x26;currencyCode=GBP&#x26;_gl=1*1d1by1q*_ga*ODY2MzE2ODU2LjE2ODk3MDQzMTM.*_ga_15W4STQT4T*MTcwODMzMjk4NS4yOC4xLjE3MDgzMzI5OTEuNTQuMC4w*_ga_1KQLCYKRX3*MTcwODMzMjk4NS4xMi4xLjE3MDgzMzI5OTEuMC4wLjA</a>.</td><td>3.05</td><td>3.05</td></tr><tr><td>1</td><td>PMEG3010EJ</td><td>PMEG3010EJ</td><td>SOD-323</td><td>D3</td><td>Schottky Rectifier, 10 V, 2 A, Single, SOD-323, 2 Pins</td><td>NEXPERIA</td><td></td><td><a href="https://www.mouser.co.uk/ProductDetail/Nexperia/PMEG3010EJ115?qs=LOCUfHb8d9u%252Bcs3tLvEEcA%3D%3D">https://www.mouser.co.uk/ProductDetail/Nexperia/PMEG3010EJ115?qs=LOCUfHb8d9u%252Bcs3tLvEEcA%3D%3D</a></td><td>0.328</td><td>0.328</td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>TOTAL</td><td>25.0872667</td></tr></tbody></table>
+{% endtab %}
+{% endtabs %}
+
+Some tips on soldering the receiver,
+
+* Start with the bottom surface with the slide switch
+* Progress to the other small components (capacitors and resistors)
+* Place large components before placing the smaller ones around it (e.g. CAN transceiver before its capacitors)
+* On the top side, place the LED first, then the pushbutton switches, then the SD socket, then the CAN termination switch, then the Power switch, then the SMA connector, then the MCU chip, then the Omron connector and finally the JST-XH connector.
+
+## Sensors
 
 
 
 ## 2024 configuration
 
+The 2024 UCL vehicle had the following nodes:
 
+* A voltage sensor (x1)
+  * on the super-capacitor poles to measure the State-Of-Charge of the super-capacitor. The SOC was calculated by multiplying the measured voltage (0 to 32.4V) by 3.08642.
+  * on the DC-DC output.
+* Three current sensors (x3)
+  * on the super-capacitor output.
+  * on the motor controller output to the motor.
+  * on the DC-DC output.
 
+{% hint style="info" %}
+Note that because of how the voltmeter shield was designed, it can be used to measure two voltages at the same time, or re-arranged to measure one current sensor.
+{% endhint %}
 
+* An Inertial Measurement Unit (IMU) - placed close to the centre of mass
+* A GPS - with antenna
+* An LCD screen - for the driver
 
 
 
 [^1]: This is the name for an arduino project, essentially the code you upload to a microcontroller.
+
+[^2]: This is the name for an arduino project, essentially the code you upload to a microcontroller.
