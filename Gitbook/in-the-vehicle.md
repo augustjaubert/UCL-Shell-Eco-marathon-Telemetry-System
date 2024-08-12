@@ -16,6 +16,7 @@ The node computer hardware diagram is presented in the figure below.
 {% tab title="Tech specs" %}
 * The nodes use a ESP32 microcontroller (S3 or C3 models) from Espressif, manufactured by Seeed ([XIAO ESP32C3](https://wiki.seeedstudio.com/XIAO\_ESP32C3\_Getting\_Started/) / [XIAO ESP32S3](https://wiki.seeedstudio.com/xiao\_esp32s3\_getting\_started/)) (top surface).
 * It uses two rows of 6 and 5 female headers (top surface) to connect to the sensor shield.
+* A Qwiic / Stemma QT connector to connect to sensor breakout boards directly (no shield).
 * They are equipped with [TCAN1462V-Q1](https://www.ti.com/lit/ds/symlink/tcan1462-q1.pdf?HQS=dis-mous-null-mousermode-dsf-pf-null-wwe\&ts=1698833597358) CAN transceivers (bottom surface) that make use of the MCU’s native [TWAI](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/peripherals/twai.html#overview) controllers.
 * They have two daisy-chained 4-pin JST XH connectors (top surface) for the data transmission CAN High / Low, and the power pins from the Receiver +5V and GND.
 * The slide switch on the top surface is the CAN termination switch, connecting the CAN High and Low lines by a 120 Ohm resistor.
@@ -40,6 +41,10 @@ This pinout diagram is valid for the XIAO ESP32-C3 microcontrollers, but some pi
 1. Assembling the node case (in ascending order)
 
 <figure><img src=".gitbook/assets/node assembly light@4x.png" alt=""><figcaption></figcaption></figure>
+
+{% hint style="info" %}
+You can also connect sensor breakout boards that feature a Qwiic or Stemma QT connector from Adafruit and Sparkfun directly to the similar connector on the bottom surface. This is the case for the GPS node, which uses a Sparkfun breakout board.
+{% endhint %}
 
 2. Attaching the node to the CAN/Power bus
 
@@ -803,9 +808,16 @@ To connect the receiver board to the arduino sketch, select the top-left text bo
 3. Usually the receiver is added at the end of the bus, therefore <mark style="color:orange;">switch the CAN termination ON.</mark>
    1. If the power source connector (Omron) also has a CAN input, then <mark style="color:orange;">switch the CAN termination OFF.</mark> There will need to be a CAN termination at the power source side of the CAN bus.
 
+### How to use
 
+#### Steps
 
-**Troubleshooting**
+1. <mark style="color:orange;">Insert the micro-SD card in the socket</mark>. See [here](in-the-vehicle.md#development-1) for more info on the telemetry data configuration.
+2. <mark style="color:orange;">Assemble the node</mark> (sensor, computer and case).
+3. <mark style="color:orange;">Connect a CAN cable</mark> to one of the JST sockets to add the node on the CAN bus.
+4. If the node is added at the end of the bus, <mark style="color:orange;">switch the CAN termination ON.</mark>
+
+#### **Troubleshooting**
 
 If it seems as though the receiver is not working as intended:
 
@@ -861,6 +873,16 @@ This also means that you can check the receiver sketch and library codebase to f
 
 
 
+
+
+#### Telemetry Data Configuration
+
+file configurations, how to add message, how to specify radio mode, radio messages etc.
+
+how radio modes works
+
+
+
 #### Build a receiver
 
 If you need to order and assemble a new receiver, you can use the gerber files provided in the [Github repository](https://github.com/augustjaubert/UCL-SEM-Telemetry-System), and upload them to JLCPCB.
@@ -896,7 +918,174 @@ Some tips on soldering the receiver,
 
 ## Sensors
 
-###
+#### IMU
+
+The IMU shield uses the Bosch BNO055 breakout board from Adafruit, soldered onto a shield board.
+
+It is the simplest of the sensor shields, showcasing its use case. The shield only connects the power lines (5V and GND) as well as the I2C communication lines (SDA and SCL) of the sensor to the node computer.
+
+PICTURE
+
+#### GPS
+
+The GPS is not a shield but a breakout board directly connected via the Qwiic connector on both the sensor and node computer. This cable connects the power and I2C lines.
+
+PICTURE
+
+#### Power meter (Voltage and Current)
+
+The power meter, sometimes referred to as the voltmeter or current meter, can measure either two voltages at the same time or be slightly modified to connect to an analog current transducer to measure one current. It is not possible to measure a voltage and current at the same time.
+
+It uses a TI ADS1115 chip, which is a 16-bit analog to digital converter (ADC). The reason for using a separate ADC chip to a op-amp to MCU ADC configuration was because the ESP32 ADC is not very good (noisy, low impedance and small range).
+
+To set it up for voltage measurements,&#x20;
+
+
+
+To set it up for current measurements,
+
+
+
+
+
+{% tabs %}
+{% tab title="3D Viewer" %}
+{% embed url="https://a360.co/3AmoNJs" %}
+{% endtab %}
+
+{% tab title="Schematics" %}
+Electrical diagram
+
+
+
+PCB footprint
+
+
+{% endtab %}
+
+{% tab title="Parts list (BOM)" %}
+
+{% endtab %}
+{% endtabs %}
+
+
+
+{% hint style="danger" %}
+The voltage shields failed multiple times at the competition.
+
+Sometimes it was only the sensor chip that blew, other times the whole node died (sensor and node computer).
+
+We were able to tell the sensor died because when connecting looking at the serial monitor it was showing that it couldn't find any I2C devices on the bus.
+
+***
+
+The exact reason for the failures is unknown, but there were problems with un-even groundings and the whole chassis of the car being grounded (i.e. you could measure a voltage when touching the carbon fibre).
+
+This would mean that, although the theoretical maximum voltage differentials of the sensors were not reached, they may have been destroyed from some electro-static discharge of some kind.
+
+***
+
+Thus, for future years it is necessary to redesign this sensor shield to incorporate as much protection as possible (ask William Backhouse in MechSpace about isolation circuitry using an isolation amplifier for a voltmeter/current-meter).
+
+The redesign should also - if possible - try to make it easier for the user to measure a voltage either by better suited connector plug and sockets (currently pluggable Phoenix terminal blocks).
+{% endhint %}
+
+#### Driver display
+
+The driver display ([4D Systems gen4-uLCD-70D](https://resources.4dsystems.com.au/datasheets/diablo16/gen4-uLCD-70D-series/)) acts as a sensor node, as the screen is connected via a 30-pin FPC cable to a shield which communicates with the node computer and thus the CAN bus.
+
+This shield is a copy of the screen manufacturer's [own module](https://4dsystems.com.au/products/gen4-ib/#Description), and was designed after looking at their schematics.
+
+{% tabs %}
+{% tab title="3D Viewer" %}
+{% embed url="https://a360.co/3UKuSaM" %}
+{% endtab %}
+
+{% tab title="Schematics" %}
+Electrical Diagram
+
+{% file src=".gitbook/assets/gen4-IB shield schematic.pdf" %}
+
+PCB footprint
+
+{% file src=".gitbook/assets/gen4-IB shield pcb layout.pdf" %}
+{% endtab %}
+
+{% tab title="Parts list (BOM)" %}
+| Qty | Value                    | Device                    | Package         | Parts | Description                                                   | Manufacturer | Link                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Unit (£) | Total (£) |
+| --- | ------------------------ | ------------------------- | --------------- | ----- | ------------------------------------------------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | --------- |
+| 1   |                          | PINHD-1X5                 | 1X05            | JP3   | PIN HEADER                                                    | n/a          | n/a                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | n/a      | #VALUE!   |
+| 1   |                          | PINHD-1X6                 | 1X06            | JP1   | PIN HEADER                                                    | n/a          | n/a                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | n/a      | #VALUE!   |
+| 3   | 0                        | R\_CHIP-0805(2012-METRIC) | RESC2012X65     | R4    | Resistor Fixed - Generic                                      | n/a          | n/a                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | n/a      | #VALUE!   |
+| 1   | 0.1 uF                   | C\_CHIP-0805(2012-METRIC) | CAPC2012X110    | C1    | Capacitor - Generic                                           | n/a          | n/a                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | n/a      | #VALUE!   |
+| 1   | 10uF                     | C\_CHIP-0805(2012-METRIC) | CAPC2012X110    | C2    | Capacitor - Generic                                           | n/a          | n/a                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | n/a      | #VALUE!   |
+| 1   | 2P 2.54mm Screw Terminal | 2828XX-2282834-2          | TERMBLK\_254-2N | J2    | 2 Position Wire to Board Terminal Block Horizontal with Board | n/a          | [https://www.amazon.co.uk/Screw-Terminal-Connector-2-54mm-Universal/dp/B07QLX73YP/ref=sr\_1\_2?crid=3CL0CRF3J3XYF\&dib=eyJ2IjoiMSJ9.LbbBpfKYYd4D5dkjRLcxj-gghuS2R6IM0szEhA3OHVHfn4EjFVEgds2HuJqN2-P7Qjboh0Ml7oAVJ5ja5ESzpyAxvcU1fATTIdL92SoxXLcmprO9iZYqXb1QcrCb21dF4cjKoVk9JtTWVB3m\_JmGJpnee\_eKV\_X8Ma7lRmQvp6xp-6\_2Nz04zg9o4ooo2TfmCOvKA8GKFfP9Z6k5e49UMm0wHO0I85lDTXMXh\_x-lftTK1N3MDY-98eW-tgjbEtG7ArG6NllpZu6R71XRHyFFYaBFDTsqyIZnzfKrzSZcSM.bqkXbXQGBBCX7BueQvEKqf1DWG2CGzGP1cy7PCJWkG4\&dib\_tag=se\&keywords=screw+terminal+2pos+2.54mm\&qid=1708427228\&sprefix=screw+terminal+2pos+2.54mm,aps,78\&sr=8-2](https://www.amazon.co.uk/Screw-Terminal-Connector-2-54mm-Universal/dp/B07QLX73YP/ref=sr\_1\_2?crid=3CL0CRF3J3XYF\&dib=eyJ2IjoiMSJ9.LbbBpfKYYd4D5dkjRLcxj-gghuS2R6IM0szEhA3OHVHfn4EjFVEgds2HuJqN2-P7Qjboh0Ml7oAVJ5ja5ESzpyAxvcU1fATTIdL92SoxXLcmprO9iZYqXb1QcrCb21dF4cjKoVk9JtTWVB3m\_JmGJpnee\_eKV\_X8Ma7lRmQvp6xp-6\_2Nz04zg9o4ooo2TfmCOvKA8GKFfP9Z6k5e49UMm0wHO0I85lDTXMXh\_x-lftTK1N3MDY-98eW-tgjbEtG7ArG6NllpZu6R71XRHyFFYaBFDTsqyIZnzfKrzSZcSM.bqkXbXQGBBCX7BueQvEKqf1DWG2CGzGP1cy7PCJWkG4\&dib\_tag=se\&keywords=screw+terminal+2pos+2.54mm\&qid=1708427228\&sprefix=screw+terminal+2pos+2.54mm,aps,78\&sr=8-2) | 0.1712   | 0.1712    |
+| 1   | 4.7k                     | R\_CHIP-0805(2012-METRIC) | RESC2012X65     | R7    | Resistor Fixed - Generic                                      | n/a          | n/a                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | n/a      | #VALUE!   |
+| 3   | 68                       | R\_CHIP-0805(2012-METRIC) | RESC2012X65     | R1    | Resistor Fixed - Generic                                      | n/a          | n/a                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | n/a      | #VALUE!   |
+| 1   | SFV30R-4STBE1HLF         | SFV30R-4STBE1HLF          | SFV30R4STBE1HLF | J1    | 0.50mm Flex Connector                                         | Amphenol     | [https://www.mouser.co.uk/ProductDetail/Amphenol-FCI/SFV30R-4STBE1HLF?qs=SqJKR5MmryfVMDRs/3Q1Tw%3D%3D](https://www.mouser.co.uk/ProductDetail/Amphenol-FCI/SFV30R-4STBE1HLF?qs=SqJKR5MmryfVMDRs/3Q1Tw%3D%3D)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | 0.6      | 0.6       |
+{% endtab %}
+{% endtabs %}
+
+It also features two holes that can be used for a screw terminal to attach a toggle switch. This toggle switch can be programmed with the MCU to perform logic operations such as dimming the lights of the screen.
+
+#### micro-SD
+
+The micro-SD shield allows the user to transform a node into a CAN datalogger device.
+
+Connect it to the node computer, attach it to the CAN bus and program it to record any CAN message sent.
+
+{% hint style="warning" %}
+Make sure to configure the datalogger node in LISTEN ONLY mode of CAN if the receiver is also attached to the bus, otherwise it will not be able to register messages.
+{% endhint %}
+
+{% tabs %}
+{% tab title="3D Viewer" %}
+{% embed url="https://a360.co/48m8Cr2" %}
+{% endtab %}
+
+{% tab title="Schematics" %}
+Electrical diagram
+
+{% file src=".gitbook/assets/microSD shield v1ra schematic.pdf" %}
+
+PCB layout
+
+{% file src=".gitbook/assets/microSD shield v1ra pcb.pdf" %}
+{% endtab %}
+
+{% tab title="Parts list (BOM)" %}
+| Qty | Value               | Device                    | Package         | Parts | Description        | Manufacturer | Link                                                                                                                                                                                             | Unit (£) | Total (£) |
+| --- | ------------------- | ------------------------- | --------------- | ----- | ------------------ | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------- | --------- |
+| 1   | PINHD-1X5           | 1X05                      | JP3             | PIN   | HEADER             | n/a          | n/a                                                                                                                                                                                              | n/a      | #VALUE!   |
+| 1   | PINHD-1X6           | 1X06                      | JP1             | PIN   | HEADER             | n/a          | n/a                                                                                                                                                                                              | n/a      | #VALUE!   |
+| 1   | 0                   | R\_CHIP-0805(2012-METRIC) | RESC2012X65     | R5    | Resistor           | n/a          | n/a                                                                                                                                                                                              | n/a      | #VALUE!   |
+| 1   | 0.1uF               | C\_CHIP-0805(2012-METRIC) | CAPC2012X110    | C1    | Capacitor          | n/a          | n/a                                                                                                                                                                                              | n/a      | #VALUE!   |
+| 5   | 10k                 | R\_CHIP-0805(2012-METRIC) | RESC2012X65     | R4,   | Resistor           | n/a          | n/a                                                                                                                                                                                              | n/a      | #VALUE!   |
+| 1   | MEM2075-00-140-01-A | MEM2075-00-140-01-A       | MEM20750014001A | J2    | uSD card connector | GCT          | [https://www.mouser.co.uk/ProductDetail/GCT/MEM2075-00-140-01-A?qs=KUoIvG/9IlZvfWpeERlq3Q%3D%3D](https://www.mouser.co.uk/ProductDetail/GCT/MEM2075-00-140-01-A?qs=KUoIvG/9IlZvfWpeERlq3Q%3D%3D) | 1.58     | 1.58      |
+{% endtab %}
+{% endtabs %}
+
+#### RFM69
+
+Similar to the datalogger node, there can also be a radio node.
+
+{% tabs %}
+{% tab title="3D Viewer" %}
+
+{% endtab %}
+
+{% tab title="Schematics" %}
+
+{% endtab %}
+
+{% tab title="Parts list (BOM)" %}
+
+{% endtab %}
+{% endtabs %}
+
+
+
+
 
 ## 2024 configuration
 
