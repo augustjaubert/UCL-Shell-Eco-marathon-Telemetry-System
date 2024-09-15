@@ -1122,6 +1122,18 @@ Note that because of how the voltmeter shield was designed, it can be used to me
 
 
 
+### Future Work
+
+#### Smaller nodes
+
+
+
+#### New Display
+
+
+
+
+
 [^1]: This is the name for an arduino project, essentially the code you upload to a microcontroller.
 
 [^2]: This is the name for an arduino project, essentially the code you upload to a microcontroller.
