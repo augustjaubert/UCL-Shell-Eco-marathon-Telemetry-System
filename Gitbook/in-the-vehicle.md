@@ -186,7 +186,7 @@ For S3 models - XIAO\_ESP32S3
 
 S3 models are identifiable by the writing on the sticker and the presence of solderable pins on the bottom, as seen on the right side of the image below.
 
-<img src=".gitbook/assets/image (1) (1).png" alt="" data-size="original">
+<img src=".gitbook/assets/image (1) (1) (1).png" alt="" data-size="original">
 
 </details>
 
@@ -730,7 +730,7 @@ The Omron socket also has CAN lines so that if a power source also has a CAN out
 
 You can see the connection placement in the centre of the image below, where <mark style="color:orange;">L is for CAN\_LOW</mark>, <mark style="color:orange;">H for CAN\_HIGH</mark>, <mark style="color:orange;">- for GROUND</mark> and <mark style="color:orange;">5V for +5V</mark>.
 
-<figure><img src=".gitbook/assets/image.png" alt="" width="375"><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (1).png" alt="" width="375"><figcaption></figcaption></figure>
 
 3. Installing in the vehicle
 
@@ -839,7 +839,7 @@ If you don't see a board appearing, then the MCU is not powered, or the serial c
     * You can first try to reset the board by clicking the **RESET BUTTON** once while the board is connected to your PC. If that does not work, hold the **BOOT BUTTON**, connect the board to your PC while holding the **BOOT** button, and then release it to enter **bootloader mode**.
   * a very unlucky reason can be that the MCU chip has failed. This has happened a few times in the past, and can be fixed by carefully desoldering the MCU chip with a hot air gun and heat-resistant Capton tape around other components, to then either replacing with a new chip or de-bricking the "dead" chip by connecting it with a test board module (possibly left in the MechSpace Workshop C drawers).
 
-<img src=".gitbook/assets/image (1).png" alt="" data-size="original">
+<img src=".gitbook/assets/image (1) (1).png" alt="" data-size="original">
 
 </details>
 
@@ -922,21 +922,47 @@ Some tips on soldering the receiver,
 
 The IMU shield uses the Bosch BNO055 breakout board from Adafruit, soldered onto a shield board.
 
-It is the simplest of the sensor shields, showcasing its use case. The shield only connects the power lines (5V and GND) as well as the I2C communication lines (SDA and SCL) of the sensor to the node computer.
+It is the simplest of the sensor shields, showcasing its use case with a typical sensor breakout board.
 
-PICTURE
+&#x20;The shield only connects the power lines (5V and GND) as well as the I2C communication lines (SDA and SCL) of the sensor to the node computer.
+
+<figure><img src=".gitbook/assets/Screenshot 2024-09-15 at 19.37.31.png" alt="" width="375"><figcaption><p>Exploded view of the IMU node, with the sensor shield on top.</p></figcaption></figure>
 
 #### GPS
 
 The GPS is not a shield but a breakout board directly connected via the Qwiic connector on both the sensor and node computer. This cable connects the power and I2C lines.
 
-PICTURE
+<figure><img src=".gitbook/assets/IMG_5613.jpg" alt="" width="563"><figcaption><p>Test bench showcasing the GPS connected to the node computer through the Qwiic cable.</p></figcaption></figure>
 
 #### Power meter (Voltage and Current)
+
+{% hint style="danger" %}
+It is recommended to re-design this shield as it presents a few flaws, most notably not enough protection and confusing layout making it hard to use.
+
+The components were prone to failure (fried) when used with the hydrogen setup during testing and competition.
+
+More on this in the [future work section](in-the-vehicle.md#future-work).
+{% endhint %}
 
 The power meter, sometimes referred to as the voltmeter or current meter, can measure either two voltages at the same time or be slightly modified to connect to an analog current transducer to measure one current. It is not possible to measure a voltage and current at the same time.
 
 It uses a TI ADS1115 chip, which is a 16-bit analog to digital converter (ADC). The reason for using a separate ADC chip to a op-amp to MCU ADC configuration was because the ESP32 ADC is not very good (noisy, low impedance and small range).
+
+{% tabs %}
+{% tab title="Overview" %}
+All the resistors and capacitors on the topside are interchangeable to change the purpose of the sensor, and change the output voltage of the [simple voltage dividers](https://learn.sparkfun.com/tutorials/voltage-dividers/all).
+
+<figure><img src=".gitbook/assets/image.png" alt="" width="563"><figcaption></figcaption></figure>
+{% endtab %}
+
+{% tab title="Voltage Measurement" %}
+To set it up for voltage measurements,&#x20;
+{% endtab %}
+
+{% tab title="Current Measurement" %}
+To set it up for current measurements,
+{% endtab %}
+{% endtabs %}
 
 To set it up for voltage measurements,&#x20;
 
@@ -969,26 +995,6 @@ PCB footprint
 {% endtabs %}
 
 
-
-{% hint style="danger" %}
-The voltage shields failed multiple times at the competition.
-
-Sometimes it was only the sensor chip that blew, other times the whole node died (sensor and node computer).
-
-We were able to tell the sensor died because when connecting looking at the serial monitor it was showing that it couldn't find any I2C devices on the bus.
-
-***
-
-The exact reason for the failures is unknown, but there were problems with un-even groundings and the whole chassis of the car being grounded (i.e. you could measure a voltage when touching the carbon fibre).
-
-This would mean that, although the theoretical maximum voltage differentials of the sensors were not reached, they may have been destroyed from some electro-static discharge of some kind.
-
-***
-
-Thus, for future years it is necessary to redesign this sensor shield to incorporate as much protection as possible (ask William Backhouse in MechSpace about isolation circuitry using an isolation amplifier for a voltmeter/current-meter).
-
-The redesign should also - if possible - try to make it easier for the user to measure a voltage either by better suited connector plug and sockets (currently pluggable Phoenix terminal blocks).
-{% endhint %}
 
 #### Driver display
 
@@ -1123,6 +1129,16 @@ Note that because of how the voltmeter shield was designed, it can be used to me
 
 
 ### Future Work
+
+#### New power shield (Voltage + Current)
+
+The voltage shields failed multiple times at the competition.
+
+Sometimes it was only the sensor chip that blew, other times the whole node died (sensor and node computer). We were able to tell the sensor died because when connecting looking at the serial monitor it was showing that it couldn't find any I2C devices on the bus.
+
+The exact reason for the failures is unknown, but there were problems with un-even groundings and the whole chassis of the car being grounded (i.e. you could measure a voltage when touching the carbon fibre). This would mean that, although the theoretical maximum voltage differentials of the sensors were not reached, they may have been destroyed from some electro-static discharge of some kind.
+
+Thus, for future years it is necessary to redesign this sensor shield to incorporate as much protection as possible (ask William Backhouse in MechSpace about isolation circuitry using an isolation amplifier for a voltmeter/current-meter). The redesign should also - if possible - try to make it easier for the user to measure a voltage either by better suited connector plug and sockets (currently pluggable Phoenix terminal blocks) and make it easier to use in general (e.g. making changing the voltage divider layout more obvious and easy to understand).
 
 #### Smaller nodes
 
