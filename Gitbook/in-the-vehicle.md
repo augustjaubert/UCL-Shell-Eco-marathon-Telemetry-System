@@ -948,50 +948,65 @@ The power meter, sometimes referred to as the voltmeter or current meter, can me
 
 It uses a TI ADS1115 chip, which is a 16-bit analog to digital converter (ADC). The reason for using a separate ADC chip to a op-amp to MCU ADC configuration was because the ESP32 ADC is not very good (noisy, low impedance and small range).
 
+The current transducer used is a [LEM HO 50-S/SP30-0100](https://uk.rs-online.com/web/p/current-transformers/1383468).
+
 {% tabs %}
 {% tab title="Overview" %}
 The shield has two voltage inputs (+ and -, green terminal plug connectors), which can be modified into one power output and one voltage measurement when used with a current transducer.
 
 All the resistors and capacitors on the topside are interchangeable to change the purpose of the sensor, and change the output voltage of the [simple voltage dividers](https://learn.sparkfun.com/tutorials/voltage-dividers/all).
 
-<figure><img src=".gitbook/assets/image.png" alt="" width="563"><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image.png" alt="" width="375"><figcaption></figcaption></figure>
 
-<figure><img src=".gitbook/assets/image (4).png" alt="" width="563"><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (4).png" alt="" width="375"><figcaption></figcaption></figure>
 {% endtab %}
 
 {% tab title="Voltage Measurement" %}
 {% hint style="warning" %}
-This is a guess from my previous work.
+This is a guess from my previous work as I do not have access to the shields.
 
-Look at the shield available to figure out if that is indeed how it is configured (i.e. resistor placement and values)
+Look at the shield available to figure out if that is indeed how it is configured (i.e. resistor placement and values).
 {% endhint %}
 
-To set it up for voltage measurements,
+To set it up for voltage measurements, the ADS1115 chip is used in [differential mode](#user-content-fn-3)[^3].
 
-* Resistors R9 and R10 are populated by the voltage dividing resistors, R9 being the first and R10 connecting to ground.
-*
+* Footprints R9/R4 and C1/C4 are populated by the voltage dividing resistors (yes a resistor on a capacitor footprint), R9 being the first resistors and C1 connecting the measured positive pole to the measured negative pole without grounding it to the node. Since the measured voltage and the node's power are not connected, I think it is better not to connect the grounds. But I'm not 100% sure.
+* Footprints R15/R11/R6/R16 are populated with a 0 Ohm resistor, or can just be connected with solder.
+  *   The resistor value that were used:
+
+      * R9/R4  -> a low value e.g. 30kOhm
+      * C1/C4 -> a very high value e.g. 1 MOhm
+
+      The goal was to lower the maximum voltage experienced by the supercapacitor (around 32.4V) down to the maximum voltage of the ADC chip (configured as 2V in software) to give us the highest possible measurement resolution.
+
+<figure><img src=".gitbook/assets/image (8).png" alt="" width="200"><figcaption></figcaption></figure>
 {% endtab %}
 
 {% tab title="Current Measurement" %}
-To set it up for current measurements,
+To set it up for current measurements, the ADS1115 chip is used in [differential mode](#user-content-fn-4)[^4].
 
+The LEM transducer has 4 pins we are connecting to:
 
+* **Power pins**, namely voltage in Uc and GND, routed to connector 1.
+  * For this, populating R22 and R2[^5] connect the + and - terminals of connector 1 to +5V and GND respectively.
+* **Voltage output pins**, Vout and Vref, routed to connector 2.
+  * The ADC compares the Vout[^6] which is a voltage between 0V and Uc (+5V) to Vref which is the reference voltage at Uc/2.
+  * For this, populating R4 and C4 with voltage dividing resistors in order to bring the 5V maximum output down to the maximum of ADC chip. This is setup just like a normal voltage measurement in differential mode.
+    * Footprints R6/R16 are populated with a 0 Ohm resistor, or can just be connected with solder.
+
+{% hint style="warning" %}
+The current transducer senses the electro-magnetic field around a wire.
+
+It was observed that the measurements could sometimes be offset by a fixed value when large currents passed through the wire within a short period of time.
+
+Therefore, we implemented a re-calibration feature in software.
+
+1. The node calibrates the sensor to 0.0A on startup so make sure no current is flowing on whatever you are measuring.
+2. In the serial monitor command line, write the letter 'c' without the ' ' to start the calibration process to a maximum current value currently running in the wire and that is know (use an adequate power supply). You will need to enter the current value in Amperes that you are calibrating to.
+3. The node automatically recalibrates the sensor to 0.0A when a shift from the initial calibration is detected within a small range around 0 (e.g. +/- 300 bits, which can represent a few mA). This is to counteract the shift/offset effect of the sensor, but it does not solve the problem on drastic shifts.
+{% endhint %}
 {% endtab %}
 {% endtabs %}
-
-
-
-
-
-To set it up for voltage measurements,&#x20;
-
-
-
-To set it up for current measurements,
-
-
-
-
 
 {% tabs %}
 {% tab title="3D Viewer" %}
@@ -1012,8 +1027,6 @@ PCB footprint
 
 {% endtab %}
 {% endtabs %}
-
-
 
 #### Driver display
 
@@ -1159,6 +1172,10 @@ The exact reason for the failures is unknown, but there were problems with un-ev
 
 Thus, for future years it is necessary to redesign this sensor shield to incorporate as much protection as possible (ask William Backhouse in MechSpace about isolation circuitry using an isolation amplifier for a voltmeter/current-meter). The redesign should also - if possible - try to make it easier for the user to measure a voltage either by better suited connector plug and sockets (currently pluggable Phoenix terminal blocks) and make it easier to use in general (e.g. making changing the voltage divider layout more obvious and easy to understand).
 
+{% hint style="info" %}
+Note: if you're making methods to add 0 Ohm resistors as connectors, consider using special footprints that allow you to easily connect traces with solder. In our implementation we used normal footprints with solder which was often difficult to bridge. Adafruit/Sparkfun probably have some footprints.
+{% endhint %}
+
 #### Smaller nodes
 
 
@@ -1172,3 +1189,11 @@ Thus, for future years it is necessary to redesign this sensor shield to incorpo
 [^1]: This is the name for an arduino project, essentially the code you upload to a microcontroller.
 
 [^2]: This is the name for an arduino project, essentially the code you upload to a microcontroller.
+
+[^3]: Compares voltage on one line to the other, necessary as measured ground may be at different level to node ground.
+
+[^4]: Compares voltage on one line to the other, necessary as measured ground may be at different level to node ground.
+
+[^5]: Board's underside
+
+[^6]: The sensor detects current in both directions by setting the 0.0A value at Uc/2. Currents above this reference indicate positive flow, while currents below it represent negative flow.
