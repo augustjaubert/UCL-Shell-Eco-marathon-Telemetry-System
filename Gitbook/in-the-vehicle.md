@@ -575,7 +575,7 @@ void loop()
 
 The sensors come in all forms, but only one shape. They all have a standardised footprint that you can build on to make new sensors while still remaining compatible with the node computer.
 
-<figure><img src=".gitbook/assets/image (3).png" alt="" width="375"><figcaption><p>Template sensor shield footprint (Unit: mm)</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (3) (1).png" alt="" width="375"><figcaption><p>Template sensor shield footprint (Unit: mm)</p></figcaption></figure>
 
 The footprint has four M3 sized holes for support, and two rows of pin headers placed just like the [node computer pinout diagram](in-the-vehicle.md#technical-specs).
 
@@ -674,7 +674,7 @@ On the top surface it has,
 * a CAN termination switch and a power switch to the rest of the system (nodes)
 * a Omron XW4K-04A1-V1 board side connector socket to receive 5V from a power source (battery, etc.) connected with a Omron XW4H-04A1 wire side connector plug
 
-<figure><img src=".gitbook/assets/image (4).png" alt=""><figcaption><p>Image of the soldered Omron XW4K-04A1-V1 board side connector socket</p></figcaption></figure>
+<figure><img src=".gitbook/assets/image (4) (1).png" alt=""><figcaption><p>Image of the soldered Omron XW4K-04A1-V1 board side connector socket</p></figcaption></figure>
 
 On the underside it has,
 
@@ -950,19 +950,32 @@ It uses a TI ADS1115 chip, which is a 16-bit analog to digital converter (ADC). 
 
 {% tabs %}
 {% tab title="Overview" %}
+The shield has two voltage inputs (+ and -, green terminal plug connectors), which can be modified into one power output and one voltage measurement when used with a current transducer.
+
 All the resistors and capacitors on the topside are interchangeable to change the purpose of the sensor, and change the output voltage of the [simple voltage dividers](https://learn.sparkfun.com/tutorials/voltage-dividers/all).
 
 <figure><img src=".gitbook/assets/image.png" alt="" width="563"><figcaption></figcaption></figure>
+
+<figure><img src=".gitbook/assets/image (4).png" alt="" width="563"><figcaption></figcaption></figure>
 {% endtab %}
 
 {% tab title="Voltage Measurement" %}
-To set it up for voltage measurements,&#x20;
+To set it up for voltage measurements,
+
+* Resistors R9 and R10 are populated by the voltage dividing resistors, R9 being the first and R10 connecting to ground.
+*
 {% endtab %}
 
 {% tab title="Current Measurement" %}
 To set it up for current measurements,
+
+
 {% endtab %}
 {% endtabs %}
+
+
+
+
 
 To set it up for voltage measurements,&#x20;
 
