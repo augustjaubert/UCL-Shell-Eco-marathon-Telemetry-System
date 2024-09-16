@@ -960,6 +960,12 @@ All the resistors and capacitors on the topside are interchangeable to change th
 {% endtab %}
 
 {% tab title="Voltage Measurement" %}
+{% hint style="warning" %}
+This is a guess from my previous work.
+
+Look at the shield available to figure out if that is indeed how it is configured (i.e. resistor placement and values)
+{% endhint %}
+
 To set it up for voltage measurements,
 
 * Resistors R9 and R10 are populated by the voltage dividing resistors, R9 being the first and R10 connecting to ground.
