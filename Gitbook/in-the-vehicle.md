@@ -628,13 +628,11 @@ If you need to order and assemble a new node computer, you can use the gerber fi
 {% tab title="Schematics" %}
 **Electrical Diagram**
 
-{% embed url="https://a360.co/3M0LLsb" %}
-
 {% file src=".gitbook/assets/Node computer schematic.pdf" %}
 
 **PCB footprint**
 
-{% embed url="https://a360.co/4fTyGyP" %}
+{% file src=".gitbook/assets/Node PCB Footprint.pdf" %}
 {% endtab %}
 
 {% tab title="Parts list (BOM)" %}
@@ -895,13 +893,11 @@ If you need to order and assemble a new receiver, you can use the gerber files p
 {% tab title="Schematics" %}
 **Electrical Diagram**
 
-{% embed url="https://a360.co/3M3JKve" %}
-
 {% file src=".gitbook/assets/receiver v2ra schematic.pdf" %}
 
 **PCB footprint**
 
-{% embed url="https://a360.co/3WZH2gG" %}
+{% file src=".gitbook/assets/Receiver PCB Footprint.pdf" %}
 {% endtab %}
 
 {% tab title="Parts list (BOM)" %}
@@ -975,7 +971,7 @@ To set it up for voltage measurements, the ADS1115 chip is used in [differential
   *   The resistor value that were used:
 
       * R9/R4  -> a low value e.g. 30kOhm
-      * C1/C4 -> a very high value e.g. 1 MOhm
+      * C1/C4 -> [a very high value](#user-content-fn-4)[^4] e.g. 1 MOhm
 
       The goal was to lower the maximum voltage experienced by the supercapacitor (around 32.4V) down to the maximum voltage of the ADC chip (configured as 2V in software) to give us the highest possible measurement resolution.
 
@@ -983,14 +979,14 @@ To set it up for voltage measurements, the ADS1115 chip is used in [differential
 {% endtab %}
 
 {% tab title="Current Measurement" %}
-To set it up for current measurements, the ADS1115 chip is used in [differential mode](#user-content-fn-4)[^4].
+To set it up for current measurements, the ADS1115 chip is used in [differential mode](#user-content-fn-5)[^5].
 
 The LEM transducer has 4 pins we are connecting to:
 
 * **Power pins**, namely voltage in Uc and GND, routed to connector 1.
-  * For this, populating R22 and R2[^5] connect the + and - terminals of connector 1 to +5V and GND respectively.
+  * For this, populating R22 and R2[^6] connect the + and - terminals of connector 1 to +5V and GND respectively.
 * **Voltage output pins**, Vout and Vref, routed to connector 2.
-  * The ADC compares the Vout[^6] which is a voltage between 0V and Uc (+5V) to Vref which is the reference voltage at Uc/2.
+  * The ADC compares the Vout[^7] which is a voltage between 0V and Uc (+5V) to Vref which is the reference voltage at Uc/2.
   * For this, populating R4 and C4 with voltage dividing resistors in order to bring the 5V maximum output down to the maximum of ADC chip. This is setup just like a normal voltage measurement in differential mode.
     * Footprints R6/R16 are populated with a 0 Ohm resistor, or can just be connected with solder.
 
@@ -1014,17 +1010,17 @@ Therefore, we implemented a re-calibration feature in software.
 {% endtab %}
 
 {% tab title="Schematics" %}
-Electrical diagram
+**Electrical diagram**
 
+{% file src=".gitbook/assets/Power Shield Schematic.pdf" %}
 
+**PCB footprint**
 
-PCB footprint
-
-
+{% file src=".gitbook/assets/Power Shield PCB Footprint.pdf" %}
 {% endtab %}
 
 {% tab title="Parts list (BOM)" %}
-
+<table><thead><tr><th width="87">Qty</th><th width="87">Value</th><th width="87">Device</th><th width="87">Package</th><th width="87">Parts</th><th width="87">Description</th></tr></thead><tbody><tr><td>6</td><td></td><td>C_CHIP-0805(2012-METRIC)</td><td>CAPC2012X110</td><td>C1</td><td></td></tr><tr><td>1</td><td></td><td>PINHD-1X5</td><td>1X05</td><td>JP3</td><td>PIN HEADER</td></tr><tr><td>1</td><td></td><td>PINHD-1X6</td><td>1X06</td><td>JP1</td><td>PIN HEADER</td></tr><tr><td>4</td><td></td><td>R_CHIP-0805(2012-METRIC)</td><td>RESC2012X65</td><td>R6</td><td></td></tr><tr><td>2</td><td>(NC)</td><td>C_CHIP-0805(2012-METRIC)</td><td>CAPC2012X110</td><td>C2</td><td></td></tr><tr><td>1</td><td>(NC) 10k</td><td>R_CHIP-0805(2012-METRIC)</td><td>RESC2012X65</td><td>R21</td><td>Resistor Fixed - Generic</td></tr><tr><td>8</td><td>0 (NC)</td><td>R_CHIP-0805(2012-METRIC)</td><td>RESC2012X65</td><td>R2</td><td></td></tr><tr><td>3</td><td>0.1uF</td><td>C_CHIP-0805(2012-METRIC)</td><td>CAPC2012X110</td><td>C3</td><td></td></tr><tr><td>4</td><td>10k</td><td>R_CHIP-0805(2012-METRIC)</td><td>RESC2012X65</td><td>R17</td><td></td></tr><tr><td>2</td><td>2P 5.08mm pitch</td><td>2828XX-2282837-2</td><td>TERMBLK_508-2N</td><td>J1</td><td></td></tr><tr><td>2</td><td>3.3k</td><td>R_CHIP-0805(2012-METRIC)</td><td>RESC2012X65</td><td>R5</td><td></td></tr><tr><td>2</td><td>43k</td><td>R_CHIP-0805(2012-METRIC)</td><td>RESC2012X65</td><td>R4</td><td></td></tr><tr><td>1</td><td>ADS1115IDGSR</td><td>ADS1115IDGSR</td><td>SOP50P490X110-10N</td><td>IC2</td><td>16-Bit 860SPS 4-Ch Delta-Sigma ADC With PGA</td></tr><tr><td>2</td><td>Fuse</td><td>R_CHIP-0603(1608-METRIC)</td><td>RESC1608X60</td><td>R1</td><td></td></tr><tr><td>2</td><td>MCP6401T-E/OT</td><td>LMH6629_SOT23</td><td>SOT95P280X145-5N</td><td>IC1</td><td></td></tr><tr><td>1</td><td>SOT23 TVS DIODE</td><td>CDSOT23-T24CAN</td><td>SOT95P230X117-3N</td><td>D1</td><td>Bourns CDSOT23-T24CAN</td></tr><tr><td>4</td><td>TEST-POINT3X5</td><td>TEST-POINT3X5</td><td>PAD.03X.05</td><td>TP-PWM-1</td><td></td></tr></tbody></table>
 {% endtab %}
 {% endtabs %}
 
@@ -1103,27 +1099,37 @@ PCB layout
 {% endtab %}
 {% endtabs %}
 
-#### RFM69
+#### RFM69(HCW)
 
 Similar to the datalogger node, there can also be a radio node.
 
 {% tabs %}
 {% tab title="3D Viewer" %}
-
+{% embed url="https://a360.co/3OLsfBB" %}
 {% endtab %}
 
 {% tab title="Schematics" %}
+**Electrical diagram**
 
+{% file src=".gitbook/assets/RFM69HCW Shield Schematic.pdf" %}
+
+**PCB Footprint**
+
+{% file src=".gitbook/assets/RFM69HCW PCB Footprint.pdf" %}
 {% endtab %}
 
 {% tab title="Parts list (BOM)" %}
-
+| Qty | Value     | Device                    | Package         | Parts | Description                   | Manufacturer | Link                                                                                                                                                                         | Unit (£) | Total (£) |
+| --- | --------- | ------------------------- | --------------- | ----- | ----------------------------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | --------- |
+| 1   |           | PINHD-1X5                 | 1X05            | JP3   | PIN HEADER                    | n/a          | n/a                                                                                                                                                                          | n/a      | #VALUE!   |
+| 1   |           | PINHD-1X6                 | 1X06            | JP1   | PIN HEADER                    | n/a          | n/a                                                                                                                                                                          | n/a      | #VALUE!   |
+| 2   | 100k      | R\_CHIP-0603(1608-METRIC) | RESC1608X60     | R1    | Resistor - Generic            | n/a          | n/a                                                                                                                                                                          | n/a      | #VALUE!   |
+| 1   | 10uF      | C\_CHIP-0603(1608-METRIC) | CAPC1608X85     | C1    | Capacitor - Generic           | n/a          | n/a                                                                                                                                                                          | n/a      | #VALUE!   |
+| 2   | NC        | R\_CHIP-0603(1608-METRIC) | RESC1608X60     | R2    | Resistor - Generic            | n/a          | n/a                                                                                                                                                                          | n/a      | #VALUE!   |
+| 1   | 14        | SMACONNECTOR\_EDGE        | SMA\_EDGELAUNCH | X1    | SMA Connector                 | n/a          | n/a                                                                                                                                                                          | n/a      | #VALUE!   |
+| 1   | COM-13909 | COM-13909                 | MOD\_COM-13909  | U2    | Rfm69hcw Wireless Transceiver | HOPERF       | [https://www.mouser.co.uk/ProductDetail/Adafruit/5693?qs=mELouGlnn3fnO8nGmYJgWQ%3D%3D](https://www.mouser.co.uk/ProductDetail/Adafruit/5693?qs=mELouGlnn3fnO8nGmYJgWQ%3D%3D) | 4.76     | 4.76      |
 {% endtab %}
 {% endtabs %}
-
-
-
-
 
 ## 2024 configuration
 
@@ -1192,8 +1198,10 @@ Note: if you're making methods to add 0 Ohm resistors as connectors, consider us
 
 [^3]: Compares voltage on one line to the other, necessary as measured ground may be at different level to node ground.
 
-[^4]: Compares voltage on one line to the other, necessary as measured ground may be at different level to node ground.
+[^4]: to have a very high impedance to minimise current draw -> minimal disturbance to the measured system
 
-[^5]: Board's underside
+[^5]: Compares voltage on one line to the other, necessary as measured ground may be at different level to node ground.
 
-[^6]: The sensor detects current in both directions by setting the 0.0A value at Uc/2. Currents above this reference indicate positive flow, while currents below it represent negative flow.
+[^6]: Board's underside
+
+[^7]: The sensor detects current in both directions by setting the 0.0A value at Uc/2. Currents above this reference indicate positive flow, while currents below it represent negative flow.
