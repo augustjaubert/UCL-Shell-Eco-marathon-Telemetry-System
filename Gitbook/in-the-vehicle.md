@@ -621,10 +621,6 @@ Most of the sensors developed this year were chosen because they had been covere
 If you need to order and assemble a new node computer, you can use the gerber files provided in the [Github repository](https://github.com/augustjaubert/UCL-SEM-Telemetry-System), and upload them to JLCPCB.
 
 {% tabs %}
-{% tab title="3D Viewer" %}
-{% embed url="https://a360.co/3WZYaDd" %}
-{% endtab %}
-
 {% tab title="Schematics" %}
 **Electrical Diagram**
 
@@ -633,6 +629,10 @@ If you need to order and assemble a new node computer, you can use the gerber fi
 **PCB footprint**
 
 {% file src=".gitbook/assets/Node PCB Footprint.pdf" %}
+{% endtab %}
+
+{% tab title="3D Viewer" %}
+{% embed url="https://a360.co/3WZYaDd" %}
 {% endtab %}
 
 {% tab title="Parts list (BOM)" %}
@@ -886,10 +886,6 @@ how radio modes works
 If you need to order and assemble a new receiver, you can use the gerber files provided in the [Github repository](https://github.com/augustjaubert/UCL-SEM-Telemetry-System), and upload them to JLCPCB.
 
 {% tabs %}
-{% tab title="3D Viewer" %}
-{% embed url="https://a360.co/3wpQ9fS" %}
-{% endtab %}
-
 {% tab title="Schematics" %}
 **Electrical Diagram**
 
@@ -898,6 +894,10 @@ If you need to order and assemble a new receiver, you can use the gerber files p
 **PCB footprint**
 
 {% file src=".gitbook/assets/Receiver PCB Footprint.pdf" %}
+{% endtab %}
+
+{% tab title="3D Viewer" %}
+{% embed url="https://a360.co/3wpQ9fS" %}
 {% endtab %}
 
 {% tab title="Parts list (BOM)" %}
@@ -1005,10 +1005,6 @@ Therefore, we implemented a re-calibration feature in software.
 {% endtabs %}
 
 {% tabs %}
-{% tab title="3D Viewer" %}
-{% embed url="https://a360.co/3AmoNJs" %}
-{% endtab %}
-
 {% tab title="Schematics" %}
 **Electrical diagram**
 
@@ -1017,6 +1013,10 @@ Therefore, we implemented a re-calibration feature in software.
 **PCB footprint**
 
 {% file src=".gitbook/assets/Power Shield PCB Footprint.pdf" %}
+{% endtab %}
+
+{% tab title="3D Viewer" %}
+{% embed url="https://a360.co/3AmoNJs" %}
 {% endtab %}
 
 {% tab title="Parts list (BOM)" %}
@@ -1031,10 +1031,6 @@ The driver display ([4D Systems gen4-uLCD-70D](https://resources.4dsystems.com.a
 This shield is a copy of the screen manufacturer's [own module](https://4dsystems.com.au/products/gen4-ib/#Description), and was designed after looking at their schematics.
 
 {% tabs %}
-{% tab title="3D Viewer" %}
-{% embed url="https://a360.co/3UKuSaM" %}
-{% endtab %}
-
 {% tab title="Schematics" %}
 Electrical Diagram
 
@@ -1043,6 +1039,10 @@ Electrical Diagram
 PCB footprint
 
 {% file src=".gitbook/assets/gen4-IB shield pcb layout.pdf" %}
+{% endtab %}
+
+{% tab title="3D Viewer" %}
+{% embed url="https://a360.co/3UKuSaM" %}
 {% endtab %}
 
 {% tab title="Parts list (BOM)" %}
@@ -1073,10 +1073,6 @@ Make sure to configure the datalogger node in LISTEN ONLY mode of CAN if the rec
 {% endhint %}
 
 {% tabs %}
-{% tab title="3D Viewer" %}
-{% embed url="https://a360.co/48m8Cr2" %}
-{% endtab %}
-
 {% tab title="Schematics" %}
 Electrical diagram
 
@@ -1085,6 +1081,10 @@ Electrical diagram
 PCB layout
 
 {% file src=".gitbook/assets/microSD shield v1ra pcb.pdf" %}
+{% endtab %}
+
+{% tab title="3D Viewer" %}
+{% embed url="https://a360.co/48m8Cr2" %}
 {% endtab %}
 
 {% tab title="Parts list (BOM)" %}
@@ -1104,10 +1104,6 @@ PCB layout
 Similar to the datalogger node, there can also be a radio node.
 
 {% tabs %}
-{% tab title="3D Viewer" %}
-{% embed url="https://a360.co/3OLsfBB" %}
-{% endtab %}
-
 {% tab title="Schematics" %}
 **Electrical diagram**
 
@@ -1116,6 +1112,10 @@ Similar to the datalogger node, there can also be a radio node.
 **PCB Footprint**
 
 {% file src=".gitbook/assets/RFM69HCW PCB Footprint.pdf" %}
+{% endtab %}
+
+{% tab title="3D Viewer" %}
+{% embed url="https://a360.co/3OLsfBB" %}
 {% endtab %}
 
 {% tab title="Parts list (BOM)" %}
@@ -1186,7 +1186,11 @@ Note: if you're making methods to add 0 Ohm resistors as connectors, consider us
 
 
 
-#### New Display
+#### New Driver Display
+
+The driver display is a major part of the current consumption of the system, taking it directly from whatever power source that the vehicle has (e.g. auxiliary 12V battery).
+
+From memory, it was required in the 2024 competition rules that everything should be powered from the same source, thus the telemetry system would impact the energy ranking.
 
 
 
