@@ -64,8 +64,6 @@ If you need to make a new cable, make sure to use the proper connections as seen
 
 <figure><picture><source srcset=".gitbook/assets/cable wiring dark@4x.png" media="(prefers-color-scheme: dark)"><img src=".gitbook/assets/cable wiring light@4x.png" alt="" width="375"></picture><figcaption><p>CAN &#x26; Power cable wiring diagram</p></figcaption></figure>
 
-
-
 #### Software
 
 1. Installing the integrated development environment (IDE)
@@ -127,20 +125,20 @@ You can add up to 70+ nodes onto the CAN bus, however limiting the number of sen
 
 #### Steps
 
-1. <mark style="color:orange;">Switch the node ON</mark>.
+1. Switch the node ON.
 
 <figure><img src=".gitbook/assets/node switch light@4x (1).png" alt="" width="375"><figcaption></figcaption></figure>
 
-2. <mark style="color:orange;">Assemble the node</mark> (sensor, computer and case).
-3. <mark style="color:orange;">Connect a CAN cable</mark> to one of the JST sockets to add the node on the CAN bus.
-4. If the node is added at the end of the bus, <mark style="color:orange;">switch the CAN termination ON.</mark>
+2. Assemble the node (sensor, computer and case).
+3. Connect a CAN cable to one of the JST sockets to add the node on the CAN bus.
+4. If the node is added at the end of the bus, switch the CAN termination ON<mark style="color:orange;">.</mark>
 
 {% hint style="info" %}
-After the system is powered, <mark style="color:orange;">the node is powered</mark> <mark style="color:orange;">if you see a LED lighting up.</mark>
+After the system is powered, the node is powered if you see a LED lighting up.
 {% endhint %}
 
 {% hint style="warning" %}
-Later versions of the node computer boards have a <mark style="color:orange;">slide switch on the bottom</mark>, which need to be activated for the power rail to go through the board.&#x20;
+Later versions of the node computer boards have a slide switch on the bottom, which need to be activated for the power rail to go through the board.&#x20;
 
 Be careful because earlier versions have reversed ON/OFF writings by mistake, so if in doubt test it outside the vehicle, and if you see a blinking red/yellow light coming from the node, it is powered.
 {% endhint %}
@@ -176,7 +174,7 @@ If you don't see a board appearing, then the MCU is not powered, or the serial c
 
 If the wrong board is appearing, that is a good sign because it recognises something.
 
-You can open the text box, click on select <mark style="color:orange;">other board and port...</mark> and search for the appropriate board.
+You can open the text box, click on select **other board and port...** and search for the appropriate board.
 
 The boards are,
 
@@ -224,35 +222,35 @@ Creates an instance of the `Node` class.
 
 **Public Methods**
 
-* `void begin(gpio_num_t canRxPin = GPIO_NUM_NC, gpio_num_t canTxPin = GPIO_NUM_NC, uint8_t canStdbyPin = 0, bool listenMode = false)`&#x20;
-  * Initialises the CAN bus with the specified pins and mode.
-* `void initializeMessage(uint32_t id, uint8_t dataLength)`&#x20;
-  * Initialises a message container with the specified ID and data length.
-* `void deleteMessage(uint32_t id)`&#x20;
-  * Deletes a message from the `messages` container.
-* `template <typename T1, typename T2 = std::nullptr_t> void updateMessageData(uint32_t id, T1 var1, T2 var2 = nullptr)`&#x20;
-  * Updates the data of a message with the given ID in the Node's message map.
-* `void transmitAllMessages(bool lowPowerMode = false, uint32_t sleepDurationMs = 1000)`&#x20;
-  * Transmits all messages in the Node's message map to the CAN bus.
-* `void transmitMessage(uint32_t id, TickType_t ticks_to_wait = pdMS_TO_TICKS(1000))`&#x20;
-  * Transmits a specific message with the specified ID and waits for the specified number of ticks.
-* `void addExpectedMessage(uint32_t id, VariableType var1Type)`&#x20;
-  * Adds a single expected message with only one variable.
-* `void addExpectedMessage(uint32_t id, VariableType var1Type, VariableType var2Type)`&#x20;
-  * Adds an expected message with two variables.
-* `void addExpectedMessages(const std::vector<ExpectedMessage> &messages)`&#x20;
-  * Adds a collection of expected messages to the internal map.
-* `std::pair<uint32_t, std::pair<String, String>> parseReceivedMessage()`&#x20;
-  * Parses the received CAN message and returns the message ID and string representations of the first and second variables in the message payload.
-* `void displayLatestMessageData()`&#x20;
-  * Displays the data of the latest message in the Node's message map.
+1. `void begin(gpio_num_t canRxPin = GPIO_NUM_NC, gpio_num_t canTxPin = GPIO_NUM_NC, uint8_t canStdbyPin = 0, bool listenMode = false)`
+   * Initialises the CAN bus with the specified pins and mode.
+2. `void initializeMessage(uint32_t id, uint8_t dataLength)`&#x20;
+   * Initialises a message container with the specified ID and data length.
+3. `void deleteMessage(uint32_t id)`&#x20;
+   * Deletes a message from the `messages` container.
+4. `template <typename T1, typename T2 = std::nullptr_t> void updateMessageData(uint32_t id, T1 var1, T2 var2 = nullptr)`&#x20;
+   * Updates the data of a message with the given ID in the Node's message map.
+5. `void transmitAllMessages(bool lowPowerMode = false, uint32_t sleepDurationMs = 1000)`&#x20;
+   * Transmits all messages in the Node's message map to the CAN bus.
+6. `void transmitMessage(uint32_t id, TickType_t ticks_to_wait = pdMS_TO_TICKS(1000))`&#x20;
+   * Transmits a specific message with the specified ID and waits for the specified number of ticks.
+7. `void addExpectedMessage(uint32_t id, VariableType var1Type)`&#x20;
+   * Adds a single expected message with only one variable.
+8. `void addExpectedMessage(uint32_t id, VariableType var1Type, VariableType var2Type)`&#x20;
+   * Adds an expected message with two variables.
+9. `void addExpectedMessages(const std::vector<ExpectedMessage> &messages)`&#x20;
+   * Adds a collection of expected messages to the internal map.
+10. `std::pair<uint32_t, std::pair<String, String>> parseReceivedMessage()`&#x20;
+    * Parses the received CAN message and returns the message ID and string representations of the first and second variables in the message payload.
+11. `void displayLatestMessageData()`&#x20;
+    * Displays the data of the latest message in the Node's message map.
 
 **Private Methods**
 
-* `void initializeCANBus(gpio_num_t canRxPin, gpio_num_t canTxPin, uint8_t canStdbyPin, bool listenMode)`&#x20;
-  * Initialises the CAN bus with the specified pins and mode.
-* `template <typename T> void convertToBytes(T value, byte *buffer)`&#x20;
-  * Converts a value of type `T` to a byte array.
+12. `void initializeCANBus(gpio_num_t canRxPin, gpio_num_t canTxPin, uint8_t canStdbyPin, bool listenMode)`&#x20;
+    * Initialises the CAN bus with the specified pins and mode.
+13. `template <typename T> void convertToBytes(T value, byte *buffer)`&#x20;
+    * Converts a value of type `T` to a byte array.
 
 **`VariableType`**
 
@@ -708,17 +706,13 @@ It can be programmed and display data on the serial port by connecting to a comp
 {% endtab %}
 {% endtabs %}
 
-
-
-
-
 ### Setup
 
 #### Hardware
 
 1. Assembling the receiver case (in ascending order)
 
-<figure><img src=".gitbook/assets/receiver assembly light@4x.png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (9).png" alt="" width="563"><figcaption></figcaption></figure>
 
 2. Attaching the node to the CAN/Power bus
 
@@ -726,7 +720,7 @@ Just like on the nodes, there is a JST-XH socket to connect the receiver to the 
 
 The Omron socket also has CAN lines so that if a power source also has a CAN output (e.g. Battery BMS system outputting CAN messages), they can be attached to the same connector plug.&#x20;
 
-You can see the connection placement in the centre of the image below, where <mark style="color:orange;">L is for CAN\_LOW</mark>, <mark style="color:orange;">H for CAN\_HIGH</mark>, <mark style="color:orange;">- for GROUND</mark> and <mark style="color:orange;">5V for +5V</mark>.
+You can see the connection placement in the centre of the image below, where **L is for CAN\_LOW**, **H for CAN\_HIGH**, **- for GROUND** and **5V for +5V**.
 
 <figure><img src=".gitbook/assets/image (1).png" alt="" width="375"><figcaption></figcaption></figure>
 
@@ -797,23 +791,23 @@ To add the receiver library to your arduino sketch[^2], add all the files in you
 
 4. Connecting to the receiver board
 
-To connect the receiver board to the arduino sketch, select the top-left text box **Select Board** and select <mark style="color:orange;">**ESP32-S3-USB-OTG**</mark>.
+To connect the receiver board to the arduino sketch, select the top-left text box **Select Board** and select **ESP32-S3-USB-OTG**.
 
 <figure><img src=".gitbook/assets/image (2).png" alt="" width="375"><figcaption></figcaption></figure>
 
-1. <mark style="color:orange;">Assemble the receiver</mark> (board and case).
-2. <mark style="color:orange;">Connect a CAN cable</mark> to the JST sockets to add the receiver to the CAN bus.
-3. Usually the receiver is added at the end of the bus, therefore <mark style="color:orange;">switch the CAN termination ON.</mark>
-   1. If the power source connector (Omron) also has a CAN input, then <mark style="color:orange;">switch the CAN termination OFF.</mark> There will need to be a CAN termination at the power source side of the CAN bus.
+1. Assemble the receiver (board and case).
+2. Connect a CAN cable to the JST sockets to add the receiver to the CAN bus.
+3. Usually the receiver is added at the end of the bus, therefore switch the CAN termination ON<mark style="color:orange;">.</mark>
+   1. If the power source connector (Omron) also has a CAN input, then switch the CAN termination OFF. There will need to be a CAN termination at the power source side of the CAN bus.
 
 ### How to use
 
 #### Steps
 
-1. <mark style="color:orange;">Insert the micro-SD card in the socket</mark>. See [here](in-the-vehicle.md#development-1) for more info on the telemetry data configuration.
-2. <mark style="color:orange;">Assemble the node</mark> (sensor, computer and case).
-3. <mark style="color:orange;">Connect a CAN cable</mark> to one of the JST sockets to add the node on the CAN bus.
-4. If the node is added at the end of the bus, <mark style="color:orange;">switch the CAN termination ON.</mark>
+1. Insert the micro-SD card in the socket. See [here](in-the-vehicle.md#development-1) for more info on the telemetry data configuration.
+2. Assemble the node (sensor, computer and case).
+3. Connect a CAN cable to one of the JST sockets to add the node on the CAN bus.
+4. If the node is added at the end of the bus, switch the CAN termination ON.
 
 #### **Troubleshooting**
 
@@ -847,7 +841,7 @@ If you don't see a board appearing, then the MCU is not powered, or the serial c
 
 If the wrong board is appearing, that is a good sign because it recognises something.
 
-You can open the text box, click on select <mark style="color:orange;">other board and port...</mark> and search for the appropriate board (ESP32-S3-USB-OTG).
+You can open the text box, click on select **other board and port...** and search for the appropriate board (ESP32-S3-USB-OTG).
 
 </details>
 
@@ -863,8 +857,6 @@ The serial output will only output things that it has been coded to output, so i
 This also means that you can check the receiver sketch and library codebase to find out where from the serial print output is coming from in the code.
 {% endhint %}
 
-
-
 ### Development
 
 #### Receiver Library
@@ -875,11 +867,68 @@ This also means that you can check the receiver sketch and library codebase to f
 
 #### Telemetry Data Configuration
 
-file configurations, how to add message, how to specify radio mode, radio messages etc.
+On the SD card connected to the receiver there is a **config** folder with a **README.TXT** file.
 
-how radio modes works
+The README file is used to configure the telemetry messages received from nodes and which ones to be sent over radio to the race engineer.
+
+<details>
+
+<summary>README file format</summary>
+
+The format of the configuration is,
+
+```
+<Message_name>, <CAN_ID>, <Param1_Name>, <Param1_Unit>, <Param1_type>, <Param1_bits>, <Param2_Name>, <Param2_Unit>,<Param2_type>,<Param2_bits>
+```
+
+For example, for the GPS node which we will name GPS1,
+
+* a CAN bus message ID of 10&#x20;
+* sending latitude in degrees in the first 4 bytes with a variable type of 32-bit integer
+* sending longitude in degrees in the last 4 bytes with a variable type of 32-bit integer
+
+Altogether, to add a message from the GPS node into one line,
+
+```
+GPS1, 22, Lat, deg, I, 32, Lon, deg, I, 32
+```
+
+To specify wether the message is also to be forwarded to the race engineer over radio, you can add an @ sign in front of the line.
+
+<pre><code><strong>@GPS1, 22, Lat, deg, I, 32, Lon, deg, I, 32
+</strong></code></pre>
+
+This process is repeated for all the expected messages from the nodes,
+
+```
+<Message_name>, <CAN_ID>, <Param1_Name>, <Param1_Unit>, <Param1_type>, <Param1_bits>, <Param2_Name>, <Param2_Unit>,<Param2_type>,<Param2_bits>
+
+@SUPCAP1, 10, SOC,%, F, 32, CAP_Volt, V,F, 32
+
+THROTTLE, 11, Volt1_2, V,F,32
+
+@CURR1, 14, Curr1, A,F, 32, Curr1_raw, bit, I, 32
+
+@CURR2, 15, Curr2, A, F, 32, Curr2_raw, bit, I, 32
+
+@CURR3, 16, Curr3, A,F, 32, Curr3_raw, bit, I, 32
+
+GPS1, 22, Lat, deg, I, 32, Lon, deg, I, 32
+
+etc...
+```
+
+When the receiver sees a message and cross-identifies it from the README file, it will record it into a folder with its Message\_name. Messages that are not written down correctly onto the README file will not be recorded onto the SD card.
+
+</details>
+
+<details>
+
+<summary>How radio modes work</summary>
 
 
+
+</details>
 
 #### Build a receiver
 
@@ -912,6 +961,10 @@ Some tips on soldering the receiver,
 * Place large components before placing the smaller ones around it (e.g. CAN transceiver before its capacitors)
 * On the top side, place the LED first, then the pushbutton switches, then the SD socket, then the CAN termination switch, then the Power switch, then the SMA connector, then the MCU chip, then the Omron connector and finally the JST-XH connector.
 
+
+
+
+
 ## Sensors
 
 #### IMU
@@ -924,11 +977,15 @@ It is the simplest of the sensor shields, showcasing its use case with a typical
 
 <figure><img src=".gitbook/assets/Screenshot 2024-09-15 at 19.37.31.png" alt="" width="375"><figcaption><p>Exploded view of the IMU node, with the sensor shield on top.</p></figcaption></figure>
 
+***
+
 #### GPS
 
 The GPS is not a shield but a breakout board directly connected via the Qwiic connector on both the sensor and node computer. This cable connects the power and I2C lines.
 
 <figure><img src=".gitbook/assets/IMG_5613.jpg" alt="" width="563"><figcaption><p>Test bench showcasing the GPS connected to the node computer through the Qwiic cable.</p></figcaption></figure>
+
+***
 
 #### Power meter (Voltage and Current)
 
@@ -1024,6 +1081,8 @@ Therefore, we implemented a re-calibration feature in software.
 {% endtab %}
 {% endtabs %}
 
+***
+
 #### Driver display
 
 The driver display ([4D Systems gen4-uLCD-70D](https://resources.4dsystems.com.au/datasheets/diablo16/gen4-uLCD-70D-series/)) acts as a sensor node, as the screen is connected via a 30-pin FPC cable to a shield which communicates with the node computer and thus the CAN bus.
@@ -1099,6 +1158,8 @@ PCB layout
 {% endtab %}
 {% endtabs %}
 
+***
+
 #### RFM69(HCW)
 
 Similar to the datalogger node, there can also be a radio node.
@@ -1131,14 +1192,18 @@ Similar to the datalogger node, there can also be a radio node.
 {% endtab %}
 {% endtabs %}
 
+
+
+
+
 ## 2024 configuration
 
-The 2024 UCL vehicle had the following nodes:
+The 2024 UCL vehicle had the following nodes,
 
-* A voltage sensor (x1)
+* (x1) voltage sensor
   * on the super-capacitor poles to measure the State-Of-Charge of the super-capacitor. The SOC was calculated by multiplying the measured voltage (0 to 32.4V) by 3.08642.
   * on the DC-DC output.
-* Three current sensors (x3)
+* (x3) current sensors
   * on the super-capacitor output.
   * on the motor controller output to the motor.
   * on the DC-DC output.
@@ -1184,13 +1249,43 @@ Note: if you're making methods to add 0 Ohm resistors as connectors, consider us
 
 #### Smaller nodes
 
+The obvious improvement to the system is to miniaturise it, as it is quite bulky and inconvenient as-is.
+
+This would mean copying the PCB design of the XIAO microcontrollers, but removing all the breakout board aspects to only be left with the critical components. You could then place them all to use the less amount of space, and overall get rid of all the pointless switches (power source switching) and accessibility features (termination resistor switch) of the current node computer design.&#x20;
+
+It is important to keep and add all safety features.
+
 
 
 #### New Driver Display
 
 The driver display is a major part of the current consumption of the system, taking it directly from whatever power source that the vehicle has (e.g. auxiliary 12V battery).
 
-From memory, it was required in the 2024 competition rules that everything should be powered from the same source, thus the telemetry system would impact the energy ranking.
+From memory, it was required in the 2024 competition rules that everything be powered from the same source, thus the telemetry system would take from the aux battery charged by the fuel cell, impacting the energy performance.
+
+I think the Politecnico di Torino team used a smartphone as a screen, telemetry communication with the pits and saving device instead of having them all separate.
+
+It is true in hindsight that that is a more viable option if you can get serial communication to work between a simple node computer and an Android phone.
+
+1. Is inherently powered by the phone battery, thus the whole system impacting the performance much much less. This means using at least 3.5Wh less than currently.
+   * The competition may not be able to enforce that the phone be counted in the power usage of the vehicle, because it could be the same phone used by the driver to communicate with the race engineer.
+2. Better display overall: better brightness/resolution, more processing power, potentially easier to program.
+3. So much easier to install in the car, would just need a phone holder and a USB-C cable.
+4. Actually cheaper than the 4D Systems display if you get a low budget android smartphone.
+
+So the plan would be that the phone is connected to a node computer via the USB-C port, and communicates over serial.&#x20;
+
+The node computer would send the necessary data it receives similarly to how the [radio station](outside-the-vehicle.md#radio-station) is communicating with the race engineer's software, but here software on the phone receives, processes and displays it on a purpose-built app to the driver.&#x20;
+
+The phone would simultaneously transmit the data of 4G/5G to a server which the race engineer connects to. This could be a webpage.
+
+The phone would also save all the data on-board in a text or csv file, similar to how it is doing it on the SD card. This may even be way faster than currently.
+
+And finally the driver would also be calling the race engineer with that same phone and some wireless earbuds, over 4G.
+
+
+
+This is quite a big software project of its own, which may require someone to work on it for a few months.
 
 
 
