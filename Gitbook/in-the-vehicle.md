@@ -206,6 +206,74 @@ The serial output will only output things that it has been coded to output, so i
 
 {% tabs %}
 {% tab title="API reference" %}
+* The `Node` class methods provide a high-level interface for interacting with a CAN bus network, abstracting away the complexities of direct hardware manipulation.
+* The `VariableType` enumeration and `ExpectedMessage` structure facilitate the definition and handling of expected messages within the CAN network.
+
+#### Usage Notes
+
+* `uint32_t id`: The identifier of the expected message.
+* `VariableType var1Type`: The type of the first variable in the message payload.
+* `VariableType var2Type`: The type of the second variable in the message payload.
+
+A structure representing an expected message with its identifier and variable types:
+
+**`ExpectedMessage`**
+
+* `INT32`: 32-bit signed integer.
+* `UINT32`: 32-bit unsigned integer.
+* `FLOAT`: Floating-point number.
+* `NONE`: No variable (used when there is only one variable).
+
+An enumeration defining the possible types of variables that can be included in a CAN message:
+
+**`VariableType`**
+
+12. `void initializeCANBus(gpio_num_t canRxPin, gpio_num_t canTxPin, uint8_t canStdbyPin, bool listenMode)`&#x20;
+    * Initialises the CAN bus with the specified pins and mode.
+13. `template <typename T> void convertToBytes(T value, byte *buffer)`&#x20;
+    * Converts a value of type `T` to a byte array.
+
+**Private Methods**
+
+1. `void begin(gpio_num_t canRxPin = GPIO_NUM_NC, gpio_num_t canTxPin = GPIO_NUM_NC, uint8_t canStdbyPin = 0, bool listenMode = false)`
+   * Initialises the CAN bus with the specified pins and mode.
+2. `void initializeMessage(uint32_t id, uint8_t dataLength)`&#x20;
+   * Initialises a message container with the specified ID and data length.
+3. `void deleteMessage(uint32_t id)`&#x20;
+   * Deletes a message from the `messages` container.
+4. `template <typename T1, typename T2 = std::nullptr_t> void updateMessageData(uint32_t id, T1 var1, T2 var2 = nullptr)`&#x20;
+   * Updates the data of a message with the given ID in the Node's message map.
+5. `void transmitAllMessages(bool lowPowerMode = false, uint32_t sleepDurationMs = 1000)`&#x20;
+   * Transmits all messages in the Node's message map to the CAN bus.
+6. `void transmitMessage(uint32_t id, TickType_t ticks_to_wait = pdMS_TO_TICKS(1000))`&#x20;
+   * Transmits a specific message with the specified ID and waits for the specified number of ticks.
+7. `void addExpectedMessage(uint32_t id, VariableType var1Type)`&#x20;
+   * Adds a single expected message with only one variable.
+8. `void addExpectedMessage(uint32_t id, VariableType var1Type, VariableType var2Type)`&#x20;
+   * Adds an expected message with two variables.
+9. `void addExpectedMessages(const std::vector<ExpectedMessage> &messages)`&#x20;
+   * Adds a collection of expected messages to the internal map.
+10. `std::pair<uint32_t, std::pair<String, String>> parseReceivedMessage()`&#x20;
+    * Parses the received CAN message and returns the message ID and string representations of the first and second variables in the message payload.
+11. `void displayLatestMessageData()`&#x20;
+    * Displays the data of the latest message in the Node's message map.
+
+**Public Methods**
+
+Creates an instance of the `Node` class.
+
+```cpp
+Node();
+```
+
+**Constructor**
+
+**`Node`**
+
+#### Classes and Structures
+
+The `Node` library provides a framework for interacting with a CAN bus network using the ESP-IDF framework on ESP32 devices. It includes functionalities for initializing the CAN bus, sending and receiving messages, and managing message expectations.
+
 The `Node` library provides a framework for interacting with a CAN bus network using the ESP-IDF framework on ESP32 devices. It includes functionalities for initializing the CAN bus, sending and receiving messages, and managing message expectations.
 
 #### Classes and Structures
@@ -861,7 +929,83 @@ This also means that you can check the receiver sketch and library codebase to f
 
 #### Receiver Library
 
+{% tabs %}
+{% tab title="First Tab" %}
 
+
+The `Receiver` library provides a framework for interacting with a CAN bus network using the ESP-IDF framework on ESP32 devices. It includes functionalities for initialising an SD card, a CAN bus, receiving, processing and storing CAN messages, and transmitting them over radio.
+
+#### Classes and Structures
+
+**`Receiver`**
+
+**Constructor**
+
+```cpp
+Receiver::Receiver(const String& configFilePath)
+```
+
+Creates a new `Receiver` instance initialized with the specified configuration file path.
+
+**Public Methods**
+
+1. `void Receiver::begin(bool liveSendingMode)`
+   * Initializes the Receiver object by setting up the SD card, radio, configuration parser, and CAN interface. liveSendingMode Flag indicating whether to enable live sending mode.
+2. `void initializeMessage(uint32_t id, uint8_t dataLength)`&#x20;
+   * Initialises a message container with the specified ID and data length.
+3. `void deleteMessage(uint32_t id)`&#x20;
+   * Deletes a message from the `messages` container.
+4. `template <typename T1, typename T2 = std::nullptr_t> void updateMessageData(uint32_t id, T1 var1, T2 var2 = nullptr)`&#x20;
+   * Updates the data of a message with the given ID in the Node's message map.
+5. `void transmitAllMessages(bool lowPowerMode = false, uint32_t sleepDurationMs = 1000)`&#x20;
+   * Transmits all messages in the Node's message map to the CAN bus.
+6. `void transmitMessage(uint32_t id, TickType_t ticks_to_wait = pdMS_TO_TICKS(1000))`&#x20;
+   * Transmits a specific message with the specified ID and waits for the specified number of ticks.
+7. `void addExpectedMessage(uint32_t id, VariableType var1Type)`&#x20;
+   * Adds a single expected message with only one variable.
+8. `void addExpectedMessage(uint32_t id, VariableType var1Type, VariableType var2Type)`&#x20;
+   * Adds an expected message with two variables.
+9. `void addExpectedMessages(const std::vector<ExpectedMessage> &messages)`&#x20;
+   * Adds a collection of expected messages to the internal map.
+10. `std::pair<uint32_t, std::pair<String, String>> parseReceivedMessage()`&#x20;
+    * Parses the received CAN message and returns the message ID and string representations of the first and second variables in the message payload.
+11. `void displayLatestMessageData()`&#x20;
+    * Displays the data of the latest message in the Node's message map.
+
+**Private Methods**
+
+12. `void initializeCANBus(gpio_num_t canRxPin, gpio_num_t canTxPin, uint8_t canStdbyPin, bool listenMode)`&#x20;
+    * Initialises the CAN bus with the specified pins and mode.
+13. `template <typename T> void convertToBytes(T value, byte *buffer)`&#x20;
+    * Converts a value of type `T` to a byte array.
+
+**`VariableType`**
+
+An enumeration defining the possible types of variables that can be included in a CAN message:
+
+* `INT32`: 32-bit signed integer.
+* `UINT32`: 32-bit unsigned integer.
+* `FLOAT`: Floating-point number.
+* `NONE`: No variable (used when there is only one variable).
+
+**`ExpectedMessage`**
+
+A structure representing an expected message with its identifier and variable types:
+
+* `uint32_t id`: The identifier of the expected message.
+* `VariableType var1Type`: The type of the first variable in the message payload.
+* `VariableType var2Type`: The type of the second variable in the message payload.
+
+#### Usage Notes
+
+* The `Node` class methods provide a high-level interface for interacting with a CAN bus network, abstracting away the complexities of direct hardware manipulation.
+* The `VariableType` enumeration and `ExpectedMessage` structure facilitate the definition and handling of expected messages within the CAN network.
+{% endtab %}
+
+{% tab title="Second Tab" %}
+
+{% endtab %}
+{% endtabs %}
 
 
 
@@ -926,7 +1070,22 @@ When the receiver sees a message and cross-identifies it from the README file, i
 
 <summary>How radio modes work</summary>
 
+There are two radio modes:
 
+* **Live-send telemetry**, where all the data to be sent is sent the instant it is received by the in-vehicle receiver and is never sent again after that. This is useful to have real-time information, but is only possible if the vehicle is in view and at a short distance (e.g. 200m)
+* **Batch-send telemetry**, where all the data to be sent is stored in a file on the SD card until the vehicle enters a pre-defined geofenced zone where it starts sending all the stored data for a lap together. The idea is that you would be sending a whole lap's data just in one section of the track. This is useful if the vehicle is not in view at all times, or if it goes further than the max transmission distance (400-500m).
+
+To activate either mode, you need to define it in the begin statement of the Receiver class/object.
+
+```cpp
+Receiver receiver("/config/README.txt");
+bool liveSendModeOn = false; // This means the batch-send mode will be used
+...
+void setup() {
+  receiver.begin(liveSendModeOn);
+...
+}
+```
 
 </details>
 
@@ -1255,7 +1414,7 @@ This would mean copying the PCB design of the XIAO microcontrollers, but removin
 
 It is important to keep and add all safety features.
 
-
+<figure><img src=".gitbook/assets/smaller node.png" alt="" width="375"><figcaption><p>Quick drawing of a miniaturised design with a bare ESP32-C3 chip.</p></figcaption></figure>
 
 #### New Driver Display
 
