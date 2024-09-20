@@ -950,9 +950,11 @@ Creates a new `Receiver` instance initialized with the specified configuration f
 **Public Methods**
 
 1. `void Receiver::begin(bool liveSendingMode)`
-   * Initializes the Receiver object by setting up the SD card, radio, configuration parser, and CAN interface. liveSendingMode Flag indicating whether to enable live sending mode.
-2. `void initializeMessage(uint32_t id, uint8_t dataLength)`&#x20;
-   * Initialises a message container with the specified ID and data length.
+   * Initialises the Receiver object by setting up the SD card, radio, configuration parser, and CAN interface. liveSendingMode Flag indicating whether to enable live sending mode.
+2. `void Receiver::receiveCAN(SemaphoreHandle_t& dataMutex, bool displayParameters)`&#x20;
+   * Receives a CAN message and handles it if the message is valid.
+     * dataMutex is a semaphore handle used to protect access to shared data.
+     * the displayParameters Flag indicating whether to display updated parameters after handling the message.
 3. `void deleteMessage(uint32_t id)`&#x20;
    * Deletes a message from the `messages` container.
 4. `template <typename T1, typename T2 = std::nullptr_t> void updateMessageData(uint32_t id, T1 var1, T2 var2 = nullptr)`&#x20;
