@@ -929,10 +929,14 @@ This also means that you can check the receiver sketch and library codebase to f
 
 #### Receiver Library
 
+{% hint style="info" %}
+The Receiver codebase is quite a convoluted assortment of libraries to separate and classify all the different functions.&#x20;
+
+There is a handler for everything SD communication related, Radio related, mode button,&#x20;
+{% endhint %}
+
 {% tabs %}
-{% tab title="First Tab" %}
-
-
+{% tab title="API Reference" %}
 The `Receiver` library provides a framework for interacting with a CAN bus network using the ESP-IDF framework on ESP32 devices. It includes functionalities for initialising an SD card, a CAN bus, receiving, processing and storing CAN messages, and transmitting them over radio.
 
 #### Classes and Structures
@@ -955,61 +959,35 @@ Creates a new `Receiver` instance initialized with the specified configuration f
    * Receives a CAN message and handles it if the message is valid.
      * dataMutex is a semaphore handle used to protect access to shared data.
      * the displayParameters Flag indicating whether to display updated parameters after handling the message.
-3. `void deleteMessage(uint32_t id)`&#x20;
-   * Deletes a message from the `messages` container.
-4. `template <typename T1, typename T2 = std::nullptr_t> void updateMessageData(uint32_t id, T1 var1, T2 var2 = nullptr)`&#x20;
-   * Updates the data of a message with the given ID in the Node's message map.
+3. `void Receiver::printParameters()`&#x20;
+   * Prints the CAN message parameters stored in the configuration parser.
+4. `void Receiver::displayUpdatedParameters()`&#x20;
+   * Displays the updated parameters by iterating over the CAN message configurations and checking for updates.
 5. `void transmitAllMessages(bool lowPowerMode = false, uint32_t sleepDurationMs = 1000)`&#x20;
    * Transmits all messages in the Node's message map to the CAN bus.
-6. `void transmitMessage(uint32_t id, TickType_t ticks_to_wait = pdMS_TO_TICKS(1000))`&#x20;
-   * Transmits a specific message with the specified ID and waits for the specified number of ticks.
-7. `void addExpectedMessage(uint32_t id, VariableType var1Type)`&#x20;
-   * Adds a single expected message with only one variable.
-8. `void addExpectedMessage(uint32_t id, VariableType var1Type, VariableType var2Type)`&#x20;
-   * Adds an expected message with two variables.
-9. `void addExpectedMessages(const std::vector<ExpectedMessage> &messages)`&#x20;
-   * Adds a collection of expected messages to the internal map.
-10. `std::pair<uint32_t, std::pair<String, String>> parseReceivedMessage()`&#x20;
-    * Parses the received CAN message and returns the message ID and string representations of the first and second variables in the message payload.
-11. `void displayLatestMessageData()`&#x20;
-    * Displays the data of the latest message in the Node's message map.
-
-**Private Methods**
-
-12. `void initializeCANBus(gpio_num_t canRxPin, gpio_num_t canTxPin, uint8_t canStdbyPin, bool listenMode)`&#x20;
-    * Initialises the CAN bus with the specified pins and mode.
-13. `template <typename T> void convertToBytes(T value, byte *buffer)`&#x20;
-    * Converts a value of type `T` to a byte array.
-
-**`VariableType`**
-
-An enumeration defining the possible types of variables that can be included in a CAN message:
-
-* `INT32`: 32-bit signed integer.
-* `UINT32`: 32-bit unsigned integer.
-* `FLOAT`: Floating-point number.
-* `NONE`: No variable (used when there is only one variable).
-
-**`ExpectedMessage`**
-
-A structure representing an expected message with its identifier and variable types:
-
-* `uint32_t id`: The identifier of the expected message.
-* `VariableType var1Type`: The type of the first variable in the message payload.
-* `VariableType var2Type`: The type of the second variable in the message payload.
+6. `void Receiver::initLapFence(float latA, float lngA, float latB, float lngB, float latC, float lngC, float latD, float lngD)`
+   * Initialises the lap fence to count laps with the given coordinates.
+7. `void Receiver::initRadioFence(float latA, float lngA, float latB, float lngB, float latC, float lngC, float latD, float lngD)`
+   * Initialises the radio fence to send telemetry data with the given coordinates.
+8. `void Receiver::togglePrintStatements()`
+   * Toggles the state of print statements.
 
 #### Usage Notes
 
-* The `Node` class methods provide a high-level interface for interacting with a CAN bus network, abstracting away the complexities of direct hardware manipulation.
-* The `VariableType` enumeration and `ExpectedMessage` structure facilitate the definition and handling of expected messages within the CAN network.
+* The `Receiver` class provides a high-level interface for handling CAN messages, radio communication, and SD card operations in a receiver system. It abstracts away the complexities of direct hardware manipulation, making it easier to integrate these functionalities into a larger system.
+* Key features include:
+  * Initialisation of the receiver system with configurable options
+  * Reception and handling of CAN messages
+  * Displaying and updating of CAN message parameters
+  * Support for both lap fences and radio fences
+  * Toggleable print statements for debugging and monitoring
+  *
 {% endtab %}
 
-{% tab title="Second Tab" %}
-
+{% tab title="Example sketch" %}
+This&#x20;
 {% endtab %}
 {% endtabs %}
-
-
 
 #### Telemetry Data Configuration
 
