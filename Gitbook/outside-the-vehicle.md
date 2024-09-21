@@ -6,7 +6,10 @@
 
 #### Hardware
 
-assembling the ground station
+1. Assembling the radio station with casing.
+2. Attach the radio antenna to the station and USB connector to your laptop.
+
+<figure><img src=".gitbook/assets/Asset 2@4x.png" alt="" width="375"><figcaption></figcaption></figure>
 
 #### Software
 
@@ -17,10 +20,6 @@ Before using the interface two applications need to be installed:
 2\.        VSCode (or any IDE) and the [Teleplot](https://github.com/nesnes/teleplot) extension installed for troubleshooting and redundancy.
 
 ### How to use
-
-#### Hardware
-
-
 
 #### Software - Live Race Engineer Interface
 

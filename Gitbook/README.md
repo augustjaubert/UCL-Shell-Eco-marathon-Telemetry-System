@@ -2,6 +2,8 @@
 
 This user manual provides the information necessary for students to use the telemetry system.
 
+<figure><img src=".gitbook/assets/Asset 1@4x (1).png" alt="" width="563"><figcaption></figcaption></figure>
+
 ### Features
 
 This system was developed for usage on a race vehicle, to collect key performance indices. These vary depending on the vehicle competition, and this guide is directed towards the use on a vehicle participating in the Shell Eco Marathon competition.
@@ -24,26 +26,8 @@ Notice that the receiver does not take care of the driver display. This is becau
 
 The radio station is connected by USB to a computer, and all it does is intercept data over radio from the vehicle’s receiver, parse and translate that information, and then the computer program takes care of nicely displaying it all.
 
-what is the system, features and parts (hardware and software)
-
-
-
-### Quick installation guide
-
-
-
 ### Live race engineer interface
 
 The live race engineer interface allows for the race engineer to assess the vehicle’s and driver’s performance during testing and at the race. This analysis is done via the use of plots. Currently there are three plots showing velocity, voltage, and current (these plots were meant to be used with a hydrogen powertrain). Besides the plots, there are toggle switches allowing for the comparison of various measured data (eg. Super-capacitor voltage and DC-DC voltage) and various laps.
 
 The how to use section describes how the already existing application can be used for data analysis. While the how to edit/update section details how the application was setup and how to modify it or update it for future applications. Finally, the future work section mentions improvements that can be made.
-
-
-
-### Hardware & Pinouts
-
-#### Node computer
-
-The node computer hardware diagram is presented in Fig. X below.
-
-<figure><img src=".gitbook/assets/New Drawing 7.svg" alt=""><figcaption></figcaption></figure>
