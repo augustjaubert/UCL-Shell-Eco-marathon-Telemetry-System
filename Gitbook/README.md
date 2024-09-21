@@ -2,7 +2,7 @@
 
 This user manual provides the information necessary for students to use the telemetry system.
 
-<figure><img src=".gitbook/assets/Asset 1@4x (1).png" alt="" width="563"><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/Asset 1@4x.png" alt=""><figcaption></figcaption></figure>
 
 ### Features
 
