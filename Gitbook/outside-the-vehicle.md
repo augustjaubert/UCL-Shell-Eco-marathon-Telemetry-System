@@ -319,11 +319,9 @@ You can click on the underlined code to reveal information about its use.
         end
 </code></pre>
 
-### Development
+### Future work
 
-
-
-#### Future Work - Live Race Engineer Interface
+#### Live Race Engineer Interface
 
 The interface can be improved upon by creating a sophisticated database structure and querying the data from it. This would allow for any kind of comparison plot to be created. Furthermore, instead of sending the measurements from the vehicle to the ground station they could be uploaded to an online database from which the readings can be accessed by any number of race engineers and from anywhere, allowing more people to do various kinds of data analysis simultaneously.
 
@@ -333,9 +331,38 @@ The interface can be improved upon by creating a sophisticated database structur
 
 ## Off-track data analysis
 
+The following procedure applies to both hydrogen and battery electric MATLAB code, found on the Github repo.&#x20;
 
+The code first runs an overview of the testing data with the lap-by-lap performance. Then, the user inputs the lap numbers to allow for comparison of laps. Using the battery testing data, the tyre analysis can be performed automatically afterwards.&#x20;
 
+The hydrogen powertrain introduces further losses which I have not been able to estimate accordingly. In case of Hydrogen analysis, Milan can perform some simulations. His results can be plotted using the MilanPlots.mlx file.
 
+Hydrogen and Battery Analysis Procedure:
+
+1. Gather the testing data in excel and format it using the column order specific to each analysis. For this, please check the excel tables provided and match the title of the columns with the raw data from testing.
+
+<figure><img src=".gitbook/assets/image (10).png" alt=""><figcaption><p>Example of an excel sheet with telemetry data columns.</p></figcaption></figure>
+
+{% hint style="info" %}
+This data arrangement was specifically made for a hydrogen powertrain with the sensor mentioned in the [2024 configuration section](in-the-vehicle.md#id-2024-configuration).
+
+If you are changing the sensors, you will need to modify the MATLAB code to account for that. Another (future work) solution is to make the plotting of the data automatic where if you upload a folder sectioned into multiple sensor folders from the receiver SD card,
+
+e.g.&#x20;
+
+* config (folder)
+  * README.txt
+* sensor 1 (folder)
+  * telemetry\_date\_time.txt
+* sensor 2 (folder)
+  * telemetry\_date\_time.txt
+
+... then the program will detect and plot a graph for each sensor folder.
+{% endhint %}
+
+2. Choose either the hydrogen or the electrical battery MATLAB code for analysis. In the first few lines, change the command to fit the correct file name: data = readtable('RandomName.xlsx');
+3. Follow the command window and input the two lap numbers to allow for the comparison of laps.
+4. All the results are now displayed. The next step is to run Milan Plots or the Tyre Analysis.
 
 [^1]: A
 
