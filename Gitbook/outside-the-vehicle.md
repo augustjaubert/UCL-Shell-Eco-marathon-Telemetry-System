@@ -13,6 +13,8 @@
 
 #### Software
 
+The radio station uses the Arduino IDE just like the other boards, and will need the RadioHead library installed from the github repository.
+
 Before using the interface two applications need to be installed:
 
 1\.        MATLAB for using the custom app.
