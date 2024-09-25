@@ -2,8 +2,8 @@
 
 This system is designed to record, store, and evaluate the performance of a the prototype in real-time and post-race.
 
-![System diagram](media/car.png)
-
 A system user guide can be found [here](https://augusts-organization-4.gitbook.io/telemetry-system-handbook).
 
-You can fork this repository to iterate on it and continue building the telemetry system.
+Fork this repository to iterate on it and continue building the telemetry system.
+
+![System diagram](media/car.png)
